@@ -15,6 +15,13 @@
  */
 #include QMK_KEYBOARD_H
 
+bool is_alt_tab_active = false;
+uint16_t alt_tab_timer = 0;
+
+enum custom_keycodes {
+	ALT_TAB = SAFE_RANGE,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /*
         | Knob 1: Vol Dn/Up |      | Knob 2: Page Dn/Up |
@@ -42,9 +49,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
         if (clockwise) {
-            tap_code(KC_VOLU);
+		if (!is_alt_tab_active) {
+			is_alt_tab_active = true;
+			register_code(KC_LALT);
+		}
+		alt_tab_timer = timer_read();
+		tap_code(KC_TAB);
         } else {
-            tap_code(KC_VOLD);
+		if (!is_alt_tab_active) {
+			is_alt_tab_active = true;
+			register_code(KC_LALT);
+		}
+		alt_tab_timer = timer_read();
+		tap_code16(LSFT(KC_TAB));
         }
     }
     else if (index == 1) {
@@ -54,4 +71,13 @@ void encoder_update_user(uint8_t index, bool clockwise) {
             tap_code(KC_PGUP);
         }
     }
+}
+
+void matrix_scan_user(void) {
+  if (is_alt_tab_active) {
+    if (timer_elapsed(alt_tab_timer) > 1000) {
+      unregister_code(KC_LALT);
+      is_alt_tab_active = false;
+    }
+  }
 }

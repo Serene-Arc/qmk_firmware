@@ -23,47 +23,46 @@ enum custom_keycodes {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    /*
-        | Knob 1: Vol Dn/Up |      | Knob 2: Page Dn/Up |
-        | Press: Mute       | Home | Press: Play/Pause  |
-        | Hold: Layer 2     | Up   | RGB Mode           |
-        | Left              | Down | Right              |
-     */
+
+	//Window movement
     [0] = LAYOUT(
-        KC_MUTE, KC_HOME, KC_MPLY,
-        MO(1)  , KC_UP  , RGB_MOD,
-        KC_LEFT, KC_DOWN, KC_RGHT
+        LSFT(KC_PAUSE),	G(KC_PGDN),			KC_MPLY,
+        LCA(KC_T), 		SGUI(KC_LEFT),		TG(1),
+        A(KC_F6), 		SGUI(KC_RIGHT), 	TG(2)
     ),
-    /*
-        | RESET          | N/A  | Media Stop |
-        | Held: Layer 2  | Home | RGB Mode   |
-        | Media Previous | End  | Media Next |
-     */
+    
+	//Program movement - Discord
     [1] = LAYOUT(
-        RESET  , BL_STEP, KC_STOP,
-        _______, KC_HOME, RGB_MOD,
-        KC_MPRV, KC_END , KC_MNXT
+        KC_TRNS,    C(KC_K),	KC_TRNS,
+        TO(0), 		A(KC_UP),	LCA(KC_UP),
+        KC_TRNS, 	A(KC_DOWN), LCA(KC_DOWN)
+    ),
+   	// Program movement - Firefox
+    [2] = LAYOUT(
+        KC_TRNS, C(KC_W),		KC_TRNS,
+        TO(0),	 C(KC_PGDN),	C(KC_L),
+        KC_TRNS, C(KC_PGUP),	C(KC_T)
     ),
 };
 
 void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
-        if (clockwise) {
-		if (!is_alt_tab_active) {
-			is_alt_tab_active = true;
-			register_code(KC_LALT);
+		if (clockwise) {
+			if (!is_alt_tab_active) {
+				is_alt_tab_active = true;
+				register_code(KC_LALT);
+			}
+			alt_tab_timer = timer_read();
+			tap_code(KC_TAB);
+		} else {
+			if (!is_alt_tab_active) {
+				is_alt_tab_active = true;
+				register_code(KC_LALT);
+			}
+			alt_tab_timer = timer_read();
+			tap_code16(LSFT(KC_TAB));
 		}
-		alt_tab_timer = timer_read();
-		tap_code(KC_TAB);
-        } else {
-		if (!is_alt_tab_active) {
-			is_alt_tab_active = true;
-			register_code(KC_LALT);
-		}
-		alt_tab_timer = timer_read();
-		tap_code16(LSFT(KC_TAB));
-        }
-    }
+	}
     else if (index == 1) {
         if (clockwise) {
             tap_code(KC_PGDN);
@@ -74,10 +73,8 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 }
 
 void matrix_scan_user(void) {
-  if (is_alt_tab_active) {
     if (timer_elapsed(alt_tab_timer) > 750) {
       unregister_code(KC_LALT);
       is_alt_tab_active = false;
     }
   }
-}

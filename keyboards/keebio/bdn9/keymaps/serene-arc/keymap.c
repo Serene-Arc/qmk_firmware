@@ -26,7 +26,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	//Window movement
     [0] = LAYOUT(
-        LSFT(KC_PAUSE),	G(KC_PGDN),		KC_MPLY,
+        LSFT(KC_PAUSE),	MEH(KC_RIGHT),	KC_MPLY,
         KC_NO, 		SGUI(KC_LEFT),		TG(1),
         A(KC_F6),	SGUI(KC_RIGHT), 	TG(2)
     ),

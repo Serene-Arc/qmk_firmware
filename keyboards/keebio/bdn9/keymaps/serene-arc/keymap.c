@@ -33,9 +33,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     
 	//Program movement - Discord
     [1] = LAYOUT(
-        KC_TRNS,    C(KC_K),	KC_TRNS,
-        TO(0), 		A(KC_UP),	LCA(KC_UP),
-        KC_TRNS, 	A(KC_DOWN), LCA(KC_DOWN)
+        KC_TRNS,    C(KC_K),		KC_TRNS,
+        TO(0), 		S(A(KC_UP)),	LCA(KC_UP),
+        KC_TRNS, 	S(A(KC_DOWN)),	LCA(KC_DOWN)
     ),
    	// Program movement - Firefox
     [2] = LAYOUT(

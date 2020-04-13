@@ -25,28 +25,28 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	//Window movement
-    [0] = LAYOUT(
-        LSFT(KC_PAUSE),	MEH(KC_RIGHT),	KC_MPLY,
-        KC_NO, 		SGUI(KC_LEFT),		TG(1),
-        A(KC_F6),	SGUI(KC_RIGHT), 	TG(2)
-    ),
-    
+	[0] = LAYOUT(
+		LSFT(KC_PAUSE),	MEH(KC_RIGHT),	KC_MPLY,
+		KC_NO,		SGUI(KC_LEFT),		TG(1),
+		A(KC_F6),	SGUI(KC_RIGHT),		TG(2)
+	),
+	
 	//Program movement - Discord
-    [1] = LAYOUT(
-        KC_TRNS,    C(KC_K),	KC_TRNS,
-        TO(0), 		A(KC_UP),	LCA(KC_UP),
-        KC_TRNS, 	A(KC_DOWN),	LCA(KC_DOWN)
-    ),
-   	// Program movement - Firefox
-    [2] = LAYOUT(
-        KC_TRNS, C(KC_W),		KC_TRNS,
-        TO(0),	 C(KC_PGDN),	C(KC_L),
-        KC_TRNS, C(KC_PGUP),	C(KC_T)
-    ),
+	[1] = LAYOUT(
+		KC_TRNS,	C(KC_K),	KC_TRNS,
+		TO(0),		A(KC_UP),	LCA(KC_UP),
+		KC_TRNS,	A(KC_DOWN),	LCA(KC_DOWN)
+	),
+	// Program movement - Firefox
+	[2] = LAYOUT(
+		KC_TRNS, C(KC_W),		KC_TRNS,
+		TO(0),	 C(KC_PGDN),	C(KC_L),
+		KC_TRNS, C(KC_PGUP),	C(KC_T)
+	),
 };
 
 void encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) {
+	if (index == 0) {
 		if (clockwise) {
 			if (!is_alt_tab_active) {
 				is_alt_tab_active = true;
@@ -63,18 +63,18 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 			tap_code16(LSFT(KC_TAB));
 		}
 	}
-    else if (index == 1) {
-        if (clockwise) {
-            tap_code(KC_PGDN);
-        } else {
-            tap_code(KC_PGUP);
-        }
-    }
+	else if (index == 1) {
+		if (clockwise) {
+			tap_code(KC_PGDN);
+		} else {
+			tap_code(KC_PGUP);
+		}
+	}
 }
 
 void matrix_scan_user(void) {
-    if (timer_elapsed(alt_tab_timer) > 750) {
-      unregister_code(KC_LALT);
-      is_alt_tab_active = false;
-    }
+	if (timer_elapsed(alt_tab_timer) > 750) {
+	  unregister_code(KC_LALT);
+	  is_alt_tab_active = false;
+	}
   }

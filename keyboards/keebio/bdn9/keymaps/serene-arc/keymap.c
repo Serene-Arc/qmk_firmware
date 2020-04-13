@@ -53,8 +53,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	//Window movement
 	[0] = LAYOUT(
 		LSFT(KC_PAUSE),	MEH(KC_RIGHT),	KC_MPLY,
-		KC_NO,		SGUI(KC_LEFT),		TG(1),
-		A(KC_F6),	SGUI(KC_RIGHT),		TG(2)
+		KC_NO,		SGUI(KC_LEFT),		TG(2),
+		A(KC_F6),	SGUI(KC_RIGHT),		TG(1)
 	),
 	
 	//Program movement - Discord

@@ -7,11 +7,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.	If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
 
@@ -21,6 +21,32 @@ uint16_t alt_tab_timer = 0;
 enum custom_keycodes {
 	ALT_TAB = SAFE_RANGE,
 };
+
+// tapdance keycodes
+enum td_keycodes {
+	DISCORD_DOWN,
+	DISCORD_UP
+};
+
+// define a type containing as many tapdance states as you need
+typedef enum {
+	SINGLE_TAP,
+	DOUBLE_SINGLE_TAP
+} td_state_t;
+
+// create a global instance of the tapdance state type
+static td_state_t td_state;
+
+// declare your tapdance functions:
+
+// function to determine the current tapdance state
+int cur_dance (qk_tap_dance_state_t *state);
+
+// `finished` and `reset` functions for each tapdance keycode
+void discdown_finished (qk_tap_dance_state_t *state, void *user_data);
+void discdown_reset (qk_tap_dance_state_t *state, void *user_data);
+void discup_finished (qk_tap_dance_state_t *state, void *user_data);
+void discup_reset (qk_tap_dance_state_t *state, void *user_data);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -33,9 +59,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	
 	//Program movement - Discord
 	[1] = LAYOUT(
-		KC_TRNS,	C(KC_K),	KC_TRNS,
-		TO(0),		A(KC_UP),	LCA(KC_UP),
-		KC_TRNS,	A(KC_DOWN),	LCA(KC_DOWN)
+		KC_TRNS,	C(KC_K),			KC_TRNS,
+		TO(0),		TD(DISCORD_UP),		LCA(KC_UP),
+		KC_TRNS,	TD(DISCORD_DOWN),	LCA(KC_DOWN)
 	),
 	// Program movement - Firefox
 	[2] = LAYOUT(
@@ -74,7 +100,66 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 
 void matrix_scan_user(void) {
 	if (timer_elapsed(alt_tab_timer) > 750) {
-	  unregister_code(KC_LALT);
-	  is_alt_tab_active = false;
+		unregister_code(KC_LALT);
+		is_alt_tab_active = false;
 	}
-  }
+}
+
+
+
+// determine the tapdance state to return
+int cur_dance (qk_tap_dance_state_t *state) {
+	if (state->count == 1) {
+		if (state->interrupted || !state->pressed) { return SINGLE_TAP; }
+	}
+	if (state->count == 2) { return DOUBLE_SINGLE_TAP; }
+	else { return 3; } // any number higher than the maximum state value you return above
+}
+
+void discdown_finished (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			register_code16(A(KC_DOWN));
+			break;
+		case DOUBLE_SINGLE_TAP:
+			register_code16(S(A(KC_DOWN)));
+	}
+}
+
+void discdown_reset (qk_tap_dance_state_t *state, void *user_data) {
+	switch (td_state) {
+		case SINGLE_TAP:
+			unregister_code16(A(KC_DOWN));
+			break;
+		case DOUBLE_SINGLE_TAP:
+			unregister_code16(S(A(KC_DOWN)));
+	}
+}
+
+void discup_finished (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			register_code16(A(KC_UP));
+			break;
+		case DOUBLE_SINGLE_TAP:
+			register_code16(S(A(KC_UP)));
+	}
+}
+
+void discup_reset (qk_tap_dance_state_t *state, void *user_data) {
+	switch (td_state) {
+		case SINGLE_TAP:
+			unregister_code16(A(KC_UP));
+			break;
+		case DOUBLE_SINGLE_TAP:
+			unregister_code16(S(A(KC_UP)));
+	}
+}
+
+// define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
+qk_tap_dance_action_t tap_dance_actions[] = {
+	[DISCORD_DOWN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, discdown_finished, discdown_reset),
+	[DISCORD_UP] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, discup_finished, discup_reset)
+};

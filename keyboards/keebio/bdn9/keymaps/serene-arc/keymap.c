@@ -25,7 +25,8 @@ enum custom_keycodes {
 // tapdance keycodes
 enum td_keycodes {
 	DISCORD_DOWN,
-	DISCORD_UP
+	DISCORD_UP,
+	WIN_SWITCH
 };
 
 // define a type containing as many tapdance states as you need
@@ -37,24 +38,21 @@ typedef enum {
 // create a global instance of the tapdance state type
 static td_state_t td_state;
 
-// declare your tapdance functions:
-
 // function to determine the current tapdance state
 int cur_dance (qk_tap_dance_state_t *state);
 
 // `finished` and `reset` functions for each tapdance keycode
-void discdown_finished (qk_tap_dance_state_t *state, void *user_data);
-void discdown_reset (qk_tap_dance_state_t *state, void *user_data);
-void discup_finished (qk_tap_dance_state_t *state, void *user_data);
-void discup_reset (qk_tap_dance_state_t *state, void *user_data);
+void discdown_fun (qk_tap_dance_state_t *state, void *user_data);
+void discup_fun (qk_tap_dance_state_t *state, void *user_data);
+void winswitch_fun (qk_tap_dance_state_t *state, void *user_data);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	//Window movement
 	[0] = LAYOUT(
-		LSFT(KC_PAUSE),	MEH(KC_RIGHT),	KC_MPLY,
-		KC_NO,		SGUI(KC_LEFT),		TG(2),
-		A(KC_F6),	SGUI(KC_RIGHT),		TG(1)
+		LSFT(KC_PAUSE),	MEH(KC_RIGHT),		KC_MPLY,
+		KC_NO,			SGUI(KC_RIGHT),		TG(2),
+		TD(WIN_SWITCH),	SGUI(KC_LEFT),		TG(1)
 	),
 	
 	//Program movement - Discord
@@ -66,8 +64,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	// Program movement - Firefox
 	[2] = LAYOUT(
 		KC_TRNS, C(KC_W),		KC_TRNS,
-		TO(0),	 C(KC_PGDN),	C(KC_L),
-		KC_TRNS, C(KC_PGUP),	C(KC_T)
+		TO(0),	 C(KC_PGUP),	C(KC_L),
+		KC_TRNS, C(KC_PGDN),	C(KC_T)
 	),
 };
 
@@ -116,50 +114,48 @@ int cur_dance (qk_tap_dance_state_t *state) {
 	else { return 3; } // any number higher than the maximum state value you return above
 }
 
-void discdown_finished (qk_tap_dance_state_t *state, void *user_data) {
+void discdown_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-			register_code16(A(KC_DOWN));
-			break;
+            register_code16(A(KC_DOWN));
+            unregister_code16(A(KC_DOWN));
+            break;
 		case DOUBLE_SINGLE_TAP:
-			register_code16(S(A(KC_DOWN)));
-	}
+            register_code16(S(A(KC_DOWN)));
+            unregister_code16(S(A(KC_DOWN)));
+    }
 }
 
-void discdown_reset (qk_tap_dance_state_t *state, void *user_data) {
-	switch (td_state) {
-		case SINGLE_TAP:
-			unregister_code16(A(KC_DOWN));
-			break;
-		case DOUBLE_SINGLE_TAP:
-			unregister_code16(S(A(KC_DOWN)));
-	}
-}
-
-void discup_finished (qk_tap_dance_state_t *state, void *user_data) {
+void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-			register_code16(A(KC_UP));
-			break;
+            register_code16(A(KC_UP));
+            unregister_code16(A(KC_UP));
+            break;
 		case DOUBLE_SINGLE_TAP:
-			register_code16(S(A(KC_UP)));
-	}
+            register_code16(S(A(KC_UP)));
+            unregister_code16(S(A(KC_UP)));
+    }
 }
 
-void discup_reset (qk_tap_dance_state_t *state, void *user_data) {
+void winswitch_fun (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-			unregister_code16(A(KC_UP));
-			break;
+            register_code16(G(KC_GRAVE));
+            unregister_code16(G(KC_GRAVE));
+            break;
 		case DOUBLE_SINGLE_TAP:
-			unregister_code16(S(A(KC_UP)));
-	}
+            register_code16(A(KC_TAB));
+            unregister_code16(A(KC_TAB));
+    }
 }
 
 // define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
 qk_tap_dance_action_t tap_dance_actions[] = {
-	[DISCORD_DOWN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, discdown_finished, discdown_reset),
-	[DISCORD_UP] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, discup_finished, discup_reset)
+	[DISCORD_DOWN] = ACTION_TAP_DANCE_FN(discdown_fun),
+	[DISCORD_UP] = ACTION_TAP_DANCE_FN(discup_fun),
+	[WIN_SWITCH] = ACTION_TAP_DANCE_FN(winswitch_fun)
 };

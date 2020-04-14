@@ -26,13 +26,14 @@ enum custom_keycodes {
 enum td_keycodes {
 	DISCORD_DOWN,
 	DISCORD_UP,
-	WIN_SWITCH
+	WIN_SWITCH,
+	WIN_CLOSE
 };
 
 // define a type containing as many tapdance states as you need
 typedef enum {
 	SINGLE_TAP,
-	DOUBLE_SINGLE_TAP
+	DOUBLE_TAP
 } td_state_t;
 
 // create a global instance of the tapdance state type
@@ -45,12 +46,13 @@ int cur_dance (qk_tap_dance_state_t *state);
 void discdown_fun (qk_tap_dance_state_t *state, void *user_data);
 void discup_fun (qk_tap_dance_state_t *state, void *user_data);
 void winswitch_fun (qk_tap_dance_state_t *state, void *user_data);
+void winclose_fun (qk_tap_dance_state_t *state, void *user_data);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	//Window movement
 	[0] = LAYOUT(
-		LSFT(KC_PAUSE),	MEH(KC_RIGHT),		KC_MPLY,
+		LSFT(KC_PAUSE),	TD(WIN_CLOSE),		KC_MPLY,
 		KC_NO,			SGUI(KC_RIGHT),		TG(2),
 		TD(WIN_SWITCH),	SGUI(KC_LEFT),		TG(1)
 	),
@@ -110,7 +112,7 @@ int cur_dance (qk_tap_dance_state_t *state) {
 	if (state->count == 1) {
 		if (state->interrupted || !state->pressed) { return SINGLE_TAP; }
 	}
-	if (state->count == 2) { return DOUBLE_SINGLE_TAP; }
+	if (state->count == 2) { return DOUBLE_TAP; }
 	else { return 3; } // any number higher than the maximum state value you return above
 }
 
@@ -118,12 +120,10 @@ void discdown_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-            register_code16(A(KC_DOWN));
-            unregister_code16(A(KC_DOWN));
+            tap_code16(A(KC_DOWN));
             break;
-		case DOUBLE_SINGLE_TAP:
-            register_code16(S(A(KC_DOWN)));
-            unregister_code16(S(A(KC_DOWN)));
+		case DOUBLE_TAP:
+            tap_code16(S(A(KC_DOWN)));
     }
 }
 
@@ -131,12 +131,10 @@ void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-            register_code16(A(KC_UP));
-            unregister_code16(A(KC_UP));
+            tap_code16(A(KC_UP));
             break;
-		case DOUBLE_SINGLE_TAP:
-            register_code16(S(A(KC_UP)));
-            unregister_code16(S(A(KC_UP)));
+		case DOUBLE_TAP:
+            tap_code16(S(A(KC_UP)));
     }
 }
 
@@ -144,12 +142,21 @@ void winswitch_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-            register_code16(G(KC_GRAVE));
-            unregister_code16(G(KC_GRAVE));
+            tap_code16(G(KC_GRAVE));
             break;
-		case DOUBLE_SINGLE_TAP:
-            register_code16(A(KC_TAB));
-            unregister_code16(A(KC_TAB));
+		case DOUBLE_TAP:
+            tap_code16(A(KC_TAB));
+    }
+}
+
+void winclose_fun (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(KC_F11);
+            break;
+		case DOUBLE_TAP:
+			tap_code16(A(KC_F4));
     }
 }
 
@@ -157,5 +164,6 @@ void winswitch_fun (qk_tap_dance_state_t *state, void *user_data) {
 qk_tap_dance_action_t tap_dance_actions[] = {
 	[DISCORD_DOWN] = ACTION_TAP_DANCE_FN(discdown_fun),
 	[DISCORD_UP] = ACTION_TAP_DANCE_FN(discup_fun),
-	[WIN_SWITCH] = ACTION_TAP_DANCE_FN(winswitch_fun)
+	[WIN_SWITCH] = ACTION_TAP_DANCE_FN(winswitch_fun),
+	[WIN_CLOSE] = ACTION_TAP_DANCE_FN(winclose_fun)
 };

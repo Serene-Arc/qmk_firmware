@@ -109,9 +109,7 @@ void matrix_scan_user(void) {
 
 // determine the tapdance state to return
 int cur_dance (qk_tap_dance_state_t *state) {
-	if (state->count == 1) {
-		if (state->interrupted || !state->pressed) { return SINGLE_TAP; }
-	}
+	if (state->count == 1) { return SINGLE_TAP; }
 	if (state->count == 2) { return DOUBLE_TAP; }
 	else { return 3; } // any number higher than the maximum state value you return above
 }

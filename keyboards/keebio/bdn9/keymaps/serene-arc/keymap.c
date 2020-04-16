@@ -140,7 +140,7 @@ void winswitch_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-            tap_code16(G(KC_GRAVE));
+            tap_code16(A(KC_F6));
             break;
 		case DOUBLE_TAP:
             tap_code16(A(KC_TAB));

@@ -71,6 +71,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	),
 };
 
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+	switch (keycode) {
+	}
+	return true;
+}
+
 void encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == 0) {
 		if (clockwise) {
@@ -99,7 +105,7 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 }
 
 void matrix_scan_user(void) {
-	if (timer_elapsed(alt_tab_timer) > 750) {
+	if (timer_elapsed(alt_tab_timer) > 700) {
 		unregister_code(KC_LALT);
 		is_alt_tab_active = false;
 	}
@@ -118,33 +124,38 @@ void discdown_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-            tap_code16(A(KC_DOWN));
-            break;
+			tap_code16(A(KC_DOWN));
+			break;
 		case DOUBLE_TAP:
-            tap_code16(S(A(KC_DOWN)));
-    }
+			tap_code16(S(A(KC_DOWN)));
+	}
 }
 
 void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-            tap_code16(A(KC_UP));
-            break;
+			tap_code16(A(KC_UP));
+			break;
 		case DOUBLE_TAP:
-            tap_code16(S(A(KC_UP)));
-    }
+			tap_code16(S(A(KC_UP)));
+	}
 }
 
 void winswitch_fun (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-            tap_code16(A(KC_F6));
-            break;
+			if (!is_alt_tab_active) {
+				is_alt_tab_active = true;
+				register_code(KC_LALT);
+			}
+			alt_tab_timer = timer_read();
+			tap_code(KC_F6);
+			break;
 		case DOUBLE_TAP:
-            tap_code16(A(KC_TAB));
-    }
+			tap_code16(A(KC_TAB));
+	}
 }
 
 void winclose_fun (qk_tap_dance_state_t *state, void *user_data) {
@@ -152,10 +163,10 @@ void winclose_fun (qk_tap_dance_state_t *state, void *user_data) {
 	switch (td_state) {
 		case SINGLE_TAP:
 			tap_code16(KC_F11);
-            break;
+			break;
 		case DOUBLE_TAP:
 			tap_code16(A(KC_F4));
-    }
+	}
 }
 
 // define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions

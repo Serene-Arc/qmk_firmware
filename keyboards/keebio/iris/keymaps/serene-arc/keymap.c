@@ -29,11 +29,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 KC_TAB,  KC_Q,    KC_W,	KC_E,	 KC_R,	  KC_T,								  KC_Y,    KC_U,	KC_I,	 KC_O,	  KC_P,    KC_BSLS,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 KC_LCTL, KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,								  KC_H,    KC_J,	KC_K,	 KC_L,	  KC_SCLN, KC_QUOT,
+	 OSM(MOD_LCTL), KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,							  KC_H,    KC_J,	KC_K,	 KC_L,	  KC_SCLN, KC_QUOT,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-	 KC_LSFT, KC_Z,    KC_X,	KC_C,	 KC_V,	  KC_B,    KC_GRV,			 KC_DEL,  KC_N,    KC_M,	KC_COMM, KC_DOT,  KC_SLSH, TD(TD_ENT_INS),
+	 OSM(MOD_LSFT), KC_Z,    KC_X,	KC_C,	 KC_V,	  KC_B,	KC_GRV,			 KC_DEL,  KC_N,    KC_M,	KC_COMM, KC_DOT,  KC_SLSH, TD(TD_ENT_INS),
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-									KC_LGUI, LOWER,   KC_ENT,					 LSFT_T(KC_SPC),  RAISE,   KC_LALT
+									KC_LGUI, LOWER,   SFT_T(KC_ENT),			 KC_SPC,  RAISE,   OSM(MOD_LALT)
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
 	),
 
@@ -47,7 +47,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
 	 BL_STEP, _______, _______, _______, KC_DOWN, KC_LCBR, KC_LPRN,			 KC_RPRN, KC_RCBR, KC_P1,	KC_P2,	 KC_P3,   KC_MINS, KC_END,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-									_______, _______, KC_DEL,					 KC_DEL,  _______, KC_P0
+									_______, _______, KC_DEL,					 KC_DEL,  _______, KC_LOCK
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
 	),
 

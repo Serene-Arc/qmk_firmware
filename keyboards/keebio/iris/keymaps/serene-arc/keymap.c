@@ -109,27 +109,39 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 void encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == 0) {
-		if (clockwise) {
+		if (layer_state_is(_QWERTY)) {
 			if (!is_alt_tab_active) {
 				is_alt_tab_active = true;
 				register_code(KC_LALT);
 			}
-			alt_tab_timer = timer_read();
-			tap_code16(KC_TAB);
-		} else {
-			if (!is_alt_tab_active) {
-				is_alt_tab_active = true;
-				register_code(KC_LALT);
+			if (clockwise) {
+				alt_tab_timer = timer_read();
+				tap_code16(KC_TAB);
+			} else {
+				alt_tab_timer = timer_read();
+				tap_code16(S(KC_TAB));
 			}
-			alt_tab_timer = timer_read();
-			tap_code16(S(KC_TAB));
+		} else if (layer_state_is(_RAISE)) {
+			if (clockwise) {
+				tap_code(KC_DOWN);
+			} else {
+				tap_code(KC_UP);
+			}
 		}
 	}
 	else if (index == 1) {
-		if (clockwise) {
-			tap_code(KC_PGDN);
-		} else {
-			tap_code(KC_PGUP);
+		if (layer_state_is(_QWERTY)) {
+			if (clockwise) {
+				tap_code(KC_PGDN);
+			} else {
+				tap_code(KC_PGUP);
+			}
+		} else if (layer_state_is(_LOWER)) {
+			if (clockwise) {
+				tap_code(KC_RIGHT);
+			} else {
+				tap_code(KC_LEFT);
+			}
 		}
 	}
 }

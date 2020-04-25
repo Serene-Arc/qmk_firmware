@@ -32,10 +32,7 @@ int cur_dance (qk_tap_dance_state_t *state);
 void td_spacsent_fun (qk_tap_dance_state_t *state, void *user_data);
 
 enum custom_keycodes {
-	QWERTY = SAFE_RANGE,
-	LOWER,
-	RAISE,
-	ADJUST,
+	CLEAR_MOD = SAFE_RANGE,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -48,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 OSM(MOD_LCTL), KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,							  KC_H,    KC_J,	KC_K,	 KC_L,	  KC_SCLN, KC_QUOT,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-	 OSM(MOD_LSFT), KC_Z,    KC_X,	KC_C,	 KC_V,	  KC_B,	KC_GRV,			 KC_MPLY,  KC_N,    KC_M,	KC_COMM, KC_DOT,  KC_SLSH, TD(TD_ENT_INS),
+	 OSM(MOD_LSFT), KC_Z,    KC_X,	KC_C,	 KC_V,	  KC_B,	CLEAR_MOD,		 KC_MPLY,  KC_N,    KC_M,	KC_COMM, KC_DOT,  KC_SLSH, TD(TD_ENT_INS),
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
 									KC_LGUI, MO(_LOWER), SFT_T(KC_ENT),	 	 TD(TD_SPC_SENT),  MO(_RAISE),   OSM(MOD_LALT)
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
@@ -99,7 +96,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
-
+		case CLEAR_MOD:
+			clear_oneshot_mods();
 	}
 	return true;
 }

@@ -98,11 +98,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
 		case CLEAR_MOD:
 			clear_oneshot_mods();
+			break;
+		default:
+			break;
 	}
 	return true;
-}
-layer_state_t layer_state_set_user(layer_state_t state) {
-	return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
 void encoder_update_user(uint8_t index, bool clockwise) {

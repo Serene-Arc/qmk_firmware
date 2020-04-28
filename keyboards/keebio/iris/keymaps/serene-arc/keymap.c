@@ -11,8 +11,7 @@ uint16_t alt_tab_timer = 0;
 
 //Tap Dance Declarations
 enum {
-	TD_ENT_INS = 0,
-	TD_8_AST,
+	TD_8_AST = 0,
 	TD_SPC_SENT
 };
 
@@ -29,8 +28,6 @@ static td_state_t td_state;
 // function to determine the current tapdance state
 int cur_dance (qk_tap_dance_state_t *state);
 
-void td_spacsent_fun (qk_tap_dance_state_t *state, void *user_data);
-
 enum custom_keycodes {
 	CLEAR_MOD = SAFE_RANGE,
 };
@@ -45,7 +42,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 OSM(MOD_LCTL), KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,							  KC_H,    KC_J,	KC_K,	 KC_L,	  KC_SCLN, KC_QUOT,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-	 OSM(MOD_LSFT), KC_Z,    KC_X,	KC_C,	 KC_V,	  KC_B,	CLEAR_MOD,		 KC_MPLY,  KC_N,    KC_M,	KC_COMM, KC_DOT,  KC_SLSH, TD(TD_ENT_INS),
+	 OSM(MOD_LSFT), KC_Z,    KC_X,	KC_C,	 KC_V,	  KC_B,	CLEAR_MOD,		 KC_MPLY,  KC_N,    KC_M,	KC_COMM, KC_DOT,  KC_SLSH, KC_ENTER,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
 									KC_LGUI, MO(_LOWER), SFT_T(KC_ENT),	 	 TD(TD_SPC_SENT),  MO(_RAISE),   OSM(MOD_LALT)
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
@@ -176,7 +173,6 @@ void td_spacsent_fun (qk_tap_dance_state_t *state, void *user_data){
 }
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-	[TD_ENT_INS]  = ACTION_TAP_DANCE_DOUBLE(KC_ENTER, S(KC_INS)),
 	[TD_8_AST]  = ACTION_TAP_DANCE_DOUBLE(KC_8, KC_PAST),
 	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN(td_spacsent_fun) 
 };

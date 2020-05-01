@@ -100,6 +100,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
 		case CLEAR_MOD:
 			clear_oneshot_mods();
+			clear_mods();
 			break;
 		case VIM_UP:
 			tap_code16(C(KC_W));

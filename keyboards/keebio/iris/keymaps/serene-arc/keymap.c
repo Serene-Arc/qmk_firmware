@@ -30,6 +30,10 @@ int cur_dance (qk_tap_dance_state_t *state);
 
 enum custom_keycodes {
 	CLEAR_MOD = SAFE_RANGE,
+	VIM_UP, 
+	VIM_DOWN,
+	VIM_LEFT,
+	VIM_RIGHT
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -52,11 +56,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐							 ┌────────┬────────┬────────┬────────┬────────┬────────┐
 	 KC_TILD, KC_EXLM, KC_AT,	KC_HASH, KC_DLR,  KC_PERC,							  KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_DEL,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 RESET,   KC_1,    KC_2,	KC_3,	 KC_4,	  KC_5,								  KC_6,    KC_7,	KC_8,	 A(KC_F6),KC_PGDN, KC_PGUP,
+	 RESET,   KC_1,    KC_2,	KC_3,	 KC_4,	  KC_5,								  KC_6,    KC_7,	VIM_UP,	 A(KC_F6),KC_PGDN, KC_PGUP,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 KC_DEL,  _______, KC_LEFT, KC_RGHT, KC_UP,   KC_LBRC,							  KC_RBRC, KC_P4,	KC_P5,	 KC_P6,   KC_PLUS, KC_HOME,
+	 KC_DEL,  _______, KC_LEFT, KC_RGHT, KC_UP,   KC_LBRC,							  KC_RBRC, KC_P4,	VIM_LEFT, VIM_RIGHT, KC_PLUS, KC_HOME,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-	 BL_STEP, KC_GRV,   _______, _______, KC_DOWN, KC_LCBR, KC_LPRN,		 KC_RPRN, KC_RCBR, KC_P1,	KC_P2,	 KC_P3,   KC_MINS, KC_END,
+	 BL_STEP, KC_GRV,   _______, _______, KC_DOWN, KC_LCBR, KC_LPRN,		 KC_RPRN, KC_RCBR, KC_P1,	VIM_DOWN, KC_P3,   KC_MINS, KC_END,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
 									_______, _______, KC_DEL,					 KC_DEL,  _______, KC_P0
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
@@ -95,6 +99,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
 		case CLEAR_MOD:
 			clear_oneshot_mods();
+			break;
+		case VIM_UP:
+			tap_code16(C(KC_W));
+			tap_code16(KC_K);
+			break;
+		case VIM_DOWN:
+			tap_code16(C(KC_W));
+			tap_code16(KC_J);
+			break;
+		case VIM_LEFT:
+			tap_code16(C(KC_W));
+			tap_code16(KC_H);
+			break;
+		case VIM_RIGHT:
+			tap_code16(C(KC_W));
+			tap_code16(KC_L);
 			break;
 		default:
 			break;

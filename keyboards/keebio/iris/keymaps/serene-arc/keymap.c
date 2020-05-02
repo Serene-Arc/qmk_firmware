@@ -73,9 +73,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 KC_PGUP, KC_EXLM, KC_AT,	KC_HASH, KC_DLR,  KC_PERC,							  KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 KC_PGDN, KC_MPRV, _______, _______, KC_PGUP, KC_MINS,							  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
+	 KC_PGDN, KC_MPRV, LCA(KC_DN), LCA(KC_UP), DISCORD_UP, KC_MINS,					  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-	 S(KC_INS), KC_MUTE, KC_MPLY, KC_VOLD, KC_PGDN, KC_UNDS, KC_LPRN,		 _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
+	 S(KC_INS), KC_MUTE, KC_MPLY, KC_VOLD, DISCORD_DN, KC_UNDS, KC_LPRN,	 _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
 									_______, _______, _______,					 _______, _______, _______
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
@@ -202,7 +202,37 @@ void td_spacsent_fun (qk_tap_dance_state_t *state, void *user_data){
 	}
 }
 
+void discdown_fun (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(A(KC_DOWN));
+			break;
+		case DOUBLE_TAP:
+			tap_code16(S(A(KC_DOWN)));
+			break;
+		default:
+			break;
+	}
+}
+
+void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(A(KC_UP));
+			break;
+		case DOUBLE_TAP:
+			tap_code16(S(A(KC_UP)));
+			break;
+		default:
+			break;
+	}
+}
+
 qk_tap_dance_action_t tap_dance_actions[] = {
+	[DISCORD_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
+	[DISCORD_UP] = ACTION_TAP_DANCE_FN(discup_fun),
 	[TD_8_AST]  = ACTION_TAP_DANCE_DOUBLE(KC_8, KC_PAST),
 	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN(td_spacsent_fun) 
 };

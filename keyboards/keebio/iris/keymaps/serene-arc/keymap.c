@@ -190,14 +190,33 @@ int cur_dance (qk_tap_dance_state_t *state) {
 	else { return 3; } // any number higher than the maximum state value you return above
 }
 
-void td_spacsent_fun (qk_tap_dance_state_t *state, void *user_data){
+void td_spacesent_finished (qk_tap_dance_state_t *state, void *user_data){
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
-			tap_code16(KC_SPACE);
+			register_code(KC_SPACE);
+			break;
+		case SINGLE_HOLD:
+			register_code(KC_SPACE);
 			break;
 		case DOUBLE_TAP:
 			SEND_STRING(". ");
+			break;
+		default:
+			break;
+	}
+}
+
+void td_spacesent_reset (qk_tap_dance_state_t *state, void *user_data){
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			unregister_code(KC_SPACE);
+			break;
+		case SINGLE_HOLD:
+			unregister_code(KC_SPACE);
+			break;
+		case DOUBLE_TAP:
 			break;
 		default:
 			break;
@@ -236,5 +255,5 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 	[DISCORD_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
 	[DISCORD_UP] = ACTION_TAP_DANCE_FN(discup_fun),
 	[TD_8_AST]  = ACTION_TAP_DANCE_DOUBLE(KC_8, KC_PAST),
-	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN(td_spacsent_fun) 
+	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset) 
 };

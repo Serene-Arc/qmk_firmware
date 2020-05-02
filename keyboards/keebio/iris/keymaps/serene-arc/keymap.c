@@ -75,9 +75,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 KC_PGUP, KC_EXLM, KC_AT,	KC_HASH, KC_DLR,  KC_PERC,							  KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 KC_PGDN, KC_MPRV, LCA(KC_DOWN), LCA(KC_UP), DISCORD_UP, KC_MINS,				  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
+	 KC_PGDN, KC_MPRV, LCA(KC_DOWN), LCA(KC_UP), TD(DISCORD_UP), KC_MINS,			  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-	 S(KC_INS), KC_MUTE, KC_MPLY, KC_VOLD, DISCORD_DN, KC_UNDS, KC_LPRN,	 _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
+	 S(KC_INS), KC_MUTE, KC_MPLY, KC_VOLD, TD(DISCORD_DN), KC_UNDS, KC_LPRN, _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
 									_______, _______, _______,					 _______, _______, _______
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘

@@ -93,45 +93,59 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	 _______, _______, SGUI(KC_LEFT), SGUI(KC_RIGHT), _______, _______,				  _______, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
 	 BL_STEP, _______, _______, _______, _______, _______, _______,			 _______, _______, _______, _______, _______, _______, _______,
-  //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
-									_______, _______, _______,					 _______, _______, _______
-								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
-	)
+	 //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
+	 _______, _______, _______,					 _______, _______, _______
+	 // └────────┴────────┴────────┘					└────────┴────────┴────────┘
+	 )
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
 		case CLEAR_MOD:
-			clear_oneshot_mods();
-			clear_mods();
+			if (record->event.pressed) {
+				clear_oneshot_mods();
+				clear_mods();
+			}
 			break;
 		case VIM_UP:
-			tap_code16(C(KC_W));
-			tap_code16(KC_K);
+			if (record->event.pressed) {
+				tap_code16(C(KC_W));
+				tap_code16(KC_K);
+			}
 			break;
 		case VIM_DOWN:
-			tap_code16(C(KC_W));
-			tap_code16(KC_J);
+			if (record->event.pressed) {
+				tap_code16(C(KC_W));
+				tap_code16(KC_J);
+			}
 			break;
 		case VIM_LEFT:
-			tap_code16(C(KC_W));
-			tap_code16(KC_H);
+			if (record->event.pressed) {
+				tap_code16(C(KC_W));
+				tap_code16(KC_H);
+			}
 			break;
 		case VIM_RIGHT:
-			tap_code16(C(KC_W));
-			tap_code16(KC_L);
+			if (record->event.pressed) {
+				tap_code16(C(KC_W));
+				tap_code16(KC_L);
+			}
 			break;
 		case VIM_CLOSE:
-			tap_code16(C(KC_W));
-			tap_code16(KC_Q);
+			if (record->event.pressed) {
+				tap_code16(C(KC_W));
+				tap_code16(KC_Q);
+			}
 			break;
 		case WIN_SWCH:
-			if (!is_alt_tab_active) {
-				is_alt_tab_active = true;
-				register_code(KC_LALT);
+			if (record->event.pressed) {
+				if (!is_alt_tab_active) {
+					is_alt_tab_active = true;
+					register_code(KC_LALT);
+				}
+				alt_tab_timer = timer_read();
+				tap_code16(KC_F6);
 			}
-			alt_tab_timer = timer_read();
-			tap_code16(KC_F6);
 		default:
 			break;
 	}

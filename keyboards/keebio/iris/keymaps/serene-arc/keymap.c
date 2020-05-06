@@ -32,6 +32,7 @@ int cur_dance (qk_tap_dance_state_t *state);
 
 enum custom_keycodes {
 	CLEAR_MOD = SAFE_RANGE,
+	WIN_SWCH,
 	VIM_UP, 
 	VIM_DOWN,
 	VIM_LEFT,
@@ -59,7 +60,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐							 ┌────────┬────────┬────────┬────────┬────────┬────────┐
 	 KC_TILD, KC_EXLM, KC_AT,	KC_HASH, KC_DLR,  KC_PERC,							  KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_DEL,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 _______,   KC_1,    KC_2,	KC_3,	 KC_4,	  KC_5,								  KC_6,    VIM_CLOSE,VIM_UP,	 A(KC_F6),KC_PGDN, KC_PGUP,
+	 _______,   KC_1,    KC_2,	KC_3,	 KC_4,	  KC_5,								  KC_6,    VIM_CLOSE,VIM_UP, WIN_SWCH, KC_PGDN, KC_PGUP,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 _______,  _______, KC_LEFT, KC_RGHT, KC_UP,   KC_LBRC,							  KC_RBRC, KC_P4,	VIM_LEFT, VIM_RIGHT, KC_PLUS, KC_HOME,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
@@ -124,6 +125,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			tap_code16(C(KC_W));
 			tap_code16(KC_Q);
 			break;
+		case WIN_SWCH:
+			if (!is_alt_tab_active) {
+				is_alt_tab_active = true;
+				register_code(KC_LALT);
+			}
+			alt_tab_timer = timer_read();
+			tap_code16(KC_F6);
 		default:
 			break;
 	}

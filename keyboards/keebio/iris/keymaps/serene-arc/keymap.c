@@ -13,8 +13,8 @@ uint16_t alt_tab_timer = 0;
 enum {
 	TD_8_AST = 0,
 	TD_SPC_SENT, 
-	DISCORD_DN, 
-	DISCORD_UP
+	DISC_DN, 
+	DISC_UP
 };
 
 // define a type containing as many tapdance states as you need
@@ -76,9 +76,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 KC_PGUP, KC_EXLM, KC_AT,	KC_HASH, KC_DLR,  KC_PERC,							  KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 KC_PGDN, KC_MPRV, LCA(KC_DOWN), LCA(KC_UP), TD(DISCORD_UP), KC_MINS,			  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
+	 KC_PGDN, KC_MPRV, LCA(KC_DOWN), LCA(KC_UP), TD(DISC_UP), KC_MINS,				  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-	 S(KC_INS), KC_MUTE, KC_MPLY, KC_VOLD, TD(DISCORD_DN), KC_UNDS, KC_LPRN, _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
+	 S(KC_INS), KC_MUTE, KC_MPLY, KC_VOLD, TD(DISC_DN), KC_UNDS, KC_LPRN,	 _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
 									_______, _______, OSM(MOD_LCTL),			 _______, _______, _______
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
@@ -274,8 +274,8 @@ void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
 }
 
 qk_tap_dance_action_t tap_dance_actions[] = {
-	[DISCORD_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
-	[DISCORD_UP] = ACTION_TAP_DANCE_FN(discup_fun),
+	[DISC_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
+	[DISC_UP] = ACTION_TAP_DANCE_FN(discup_fun),
 	[TD_8_AST]  = ACTION_TAP_DANCE_DOUBLE(KC_8, KC_PAST),
 	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset) 
 };

@@ -40,7 +40,10 @@ enum custom_keycodes {
 	VIM_CLOSE,
 	VIM_N1,
 	VIM_N2,
-	VIM_N3,
+	VIM_N4,
+	VIM_N5,
+	VIM_N6,
+	VIM_N7,
 	VIM_CMLPT
 };
 
@@ -78,7 +81,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐							 ┌────────┬────────┬────────┬────────┬────────┬────────┐
 	 KC_F12,  KC_F1,   KC_F2,	KC_F3,	 KC_F4,   KC_F5,							  KC_F6,   KC_F7,	KC_F8,	 KC_F9,   KC_F10,  KC_F11,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 VIM_CMLPT, VIM_N1, VIM_N2,	VIM_N3,	 KC_DLR,  KC_PERC,							  KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
+	 VIM_CMLPT, VIM_N1, VIM_N2,	VIM_N3,	 VIM_N4,  VIM_N5,							  VIM_N6, VIM_N7,	KC_ASTR, KC_LPRN, KC_RPRN, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 KC_PGDN, KC_MPRV, LCA(KC_DOWN), LCA(KC_UP), TD(DISC_UP), KC_MINS,				  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
@@ -164,6 +167,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case VIM_N3:
 			if (record->event.pressed) {
 				SEND_STRING("$!nm3");
+			}
+			break;
+		case VIM_N4:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm4");
+			}
+			break;
+		case VIM_N5:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm5");
+			}
+			break;
+		case VIM_N6:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm6");
+			}
+			break;
+		case VIM_N7:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm7");
 			}
 			break;
 		case VIM_CMLPT:

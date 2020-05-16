@@ -83,7 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 VIM_CMLPT, VIM_N1, VIM_N2,	VIM_N3,	 VIM_N4,  VIM_N5,							  VIM_N6, VIM_N7,	KC_ASTR, KC_LPRN, KC_RPRN, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
-	 KC_PGDN, KC_MPRV, LCA(KC_DOWN), LCA(KC_UP), TD(DISC_UP), KC_MINS,				  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
+	 KC_PGDN, KC_MNXT, LCA(KC_DOWN), LCA(KC_UP), TD(DISC_UP), KC_MINS,				  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
 	 S(KC_INS), KC_MUTE, KC_MPLY, KC_VOLD, TD(DISC_DN), KC_UNDS, KC_LPRN,	 _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘

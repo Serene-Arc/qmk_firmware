@@ -40,6 +40,7 @@ enum custom_keycodes {
 	VIM_CLOSE,
 	VIM_N1,
 	VIM_N2,
+	VIM_N3,
 	VIM_N4,
 	VIM_N5,
 	VIM_N6,

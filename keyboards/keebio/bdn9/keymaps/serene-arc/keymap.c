@@ -83,19 +83,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 void encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == 0) {
 		if (clockwise) {
-			if (!is_alt_tab_active) {
-				is_alt_tab_active = true;
-				register_code(KC_LALT);
-			}
-			alt_tab_timer = timer_read();
-			tap_code(KC_TAB);
+			tap_code16(C(KC_PGUP));
 		} else {
-			if (!is_alt_tab_active) {
-				is_alt_tab_active = true;
-				register_code(KC_LALT);
-			}
-			alt_tab_timer = timer_read();
-			tap_code16(LSFT(KC_TAB));
+			tap_code16(C(KC_PGDN));
 		}
 	}
 	else if (index == 1) {
@@ -108,13 +98,13 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 }
 
 void matrix_scan_user(void) {
-	if (timer_elapsed(alt_tab_timer) > 700) {
-		unregister_code(KC_LALT);
-		is_alt_tab_active = false;
+	if (!is_alt_tab_active) {
+		if (timer_elapsed(alt_tab_timer) > 700) {
+			unregister_code(KC_LALT);
+			is_alt_tab_active = false;
+		}
 	}
 }
-
-
 
 // determine the tapdance state to return
 int cur_dance (qk_tap_dance_state_t *state) {

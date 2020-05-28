@@ -227,6 +227,19 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 			} else {
 				tap_code(KC_UP);
 			}
+		} else if (layer_state_is(_LOWER)) {
+			if (!is_alt_tab_active) {
+				is_alt_tab_active = true;
+				register_code(KC_LALT);
+			}
+			if (clockwise) {
+				alt_tab_timer = timer_read();
+				tap_code16(KC_GRV);
+			}
+			else {
+				alt_tab_timer = timer_read();
+				tap_code16(S(KC_GRV));
+			}
 		}
 	}
 	else if (index == 1) {

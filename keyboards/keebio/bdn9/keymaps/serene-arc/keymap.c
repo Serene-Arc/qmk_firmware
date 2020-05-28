@@ -24,8 +24,6 @@ enum custom_keycodes {
 
 // tapdance keycodes
 enum td_keycodes {
-	DISCORD_DOWN,
-	DISCORD_UP,
 	WIN_SWITCH,
 	WIN_CLOSE,
 	FIREFOX_TABS
@@ -45,8 +43,6 @@ static td_state_t td_state;
 int cur_dance (qk_tap_dance_state_t *state);
 
 // `finished` and `reset` functions for each tapdance keycode
-void discdown_fun (qk_tap_dance_state_t *state, void *user_data);
-void discup_fun (qk_tap_dance_state_t *state, void *user_data);
 void winswitch_fun (qk_tap_dance_state_t *state, void *user_data);
 void winclose_fun (qk_tap_dance_state_t *state, void *user_data);
 void firetab_func (qk_tap_dance_state_t *state, void *user_data);
@@ -60,14 +56,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		TD(WIN_SWITCH),	SGUI(KC_LEFT),		TG(1)
 	),
 	
-	//Program movement - Discord
-	[1] = LAYOUT(
-		KC_TRNS,	C(KC_K),			KC_TRNS,
-		TO(0),		TD(DISCORD_UP),		LCA(KC_UP),
-		KC_TRNS,	TD(DISCORD_DOWN),	LCA(KC_DOWN)
-	),
 	// Program movement - Firefox
-	[2] = LAYOUT(
+	[1] = LAYOUT(
 		KC_TRNS, C(KC_W),		KC_TRNS,
 		TO(0),	 C(KC_PGUP),	TD(FIREFOX_TABS),
 		KC_TRNS, C(KC_PGDN),	C(KC_T)
@@ -112,34 +102,6 @@ int cur_dance (qk_tap_dance_state_t *state) {
 	if (state->count == 2) { return DOUBLE_TAP; }
 	if (state->count == 3) { return TRIPLE_TAP; }
 	else { return 3; } // any number higher than the maximum state value you return above
-}
-
-void discdown_fun (qk_tap_dance_state_t *state, void *user_data) {
-	td_state = cur_dance(state);
-	switch (td_state) {
-		case SINGLE_TAP:
-			tap_code16(A(KC_DOWN));
-			break;
-		case DOUBLE_TAP:
-			tap_code16(S(A(KC_DOWN)));
-			break;
-		default:
-			break;
-	}
-}
-
-void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
-	td_state = cur_dance(state);
-	switch (td_state) {
-		case SINGLE_TAP:
-			tap_code16(A(KC_UP));
-			break;
-		case DOUBLE_TAP:
-			tap_code16(S(A(KC_UP)));
-			break;
-		default:
-			break;
-	}
 }
 
 void winswitch_fun (qk_tap_dance_state_t *state, void *user_data) {
@@ -193,8 +155,6 @@ void firetab_func (qk_tap_dance_state_t *state, void *user_data) {
 
 // define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
 qk_tap_dance_action_t tap_dance_actions[] = {
-	[DISCORD_DOWN] = ACTION_TAP_DANCE_FN(discdown_fun),
-	[DISCORD_UP] = ACTION_TAP_DANCE_FN(discup_fun),
 	[WIN_SWITCH] = ACTION_TAP_DANCE_FN(winswitch_fun),
 	[WIN_CLOSE] = ACTION_TAP_DANCE_FN(winclose_fun),
 	[FIREFOX_TABS] = ACTION_TAP_DANCE_FN(firetab_func)

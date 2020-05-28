@@ -52,14 +52,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	//Window movement
 	[0] = LAYOUT(
 		LSFT(KC_PAUSE),	TD(WIN_CLOSE),		KC_MPLY,
-		KC_NO,			SGUI(KC_RIGHT),		TG(2),
-		TD(WIN_SWITCH),	SGUI(KC_LEFT),		TG(1)
+		KC_NO,			SGUI(KC_RIGHT),		TG(1),
+		TD(WIN_SWITCH),	SGUI(KC_LEFT),		TG(2)
 	),
 	
 	// Program movement - Firefox
 	[1] = LAYOUT(
 		KC_TRNS, C(KC_W),		KC_TRNS,
-		TO(0),	 C(KC_PGUP),	TD(FIREFOX_TABS),
+		TO(0),	 A(C(KC_R)),	TD(FIREFOX_TABS),
 		KC_TRNS, C(KC_PGDN),	C(KC_T)
 	),
 };

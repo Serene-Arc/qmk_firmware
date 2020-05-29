@@ -17,9 +17,10 @@
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
+bool enc_page_move = false;
 
 enum custom_keycodes {
-	ALT_TAB = SAFE_RANGE,
+	TOGG_ENC = SAFE_RANGE,
 };
 
 // tapdance keycodes
@@ -43,40 +44,40 @@ static td_state_t td_state;
 // function to determine the current tapdance state
 int cur_dance (qk_tap_dance_state_t *state);
 
-// `finished` and `reset` functions for each tapdance keycode
-void winswitch_fun (qk_tap_dance_state_t *state, void *user_data);
-void winclose_fun (qk_tap_dance_state_t *state, void *user_data);
-void firetab_func (qk_tap_dance_state_t *state, void *user_data);
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-	//Window movement
 	[0] = LAYOUT(
-		LSFT(KC_PAUSE),	TD(WIN_CLOSE),		KC_MPLY,
-		KC_NO,			SGUI(KC_RIGHT),		TG(1),
-		TD(WIN_SWITCH),	SGUI(KC_LEFT),		TG(2)
-	),
-	
-	// Program movement - Firefox
-	[1] = LAYOUT(
-		KC_TRNS, TD(FFOX_TABCTRL),	KC_TRNS,
-		TO(0),	 A(C(KC_R)),		TD(FIREFOX_TABS),
+		TOGG_ENC, TD(FFOX_TABCTRL),	KC_MPLY,
+		KC_TRNS, A(C(KC_R)),		TD(FIREFOX_TABS),
 		KC_TRNS, C(KC_PGDN),		C(KC_T)
 	),
+
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
+		case TOGG_ENC:
+			if (record->event.pressed) {
+				enc_page_move = !enc_page_move;
+			}
 	}
 	return true;
 }
 
 void encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == 0) {
-		if (clockwise) {
-			tap_code16(C(KC_PGDN));
-		} else {
-			tap_code16(C(KC_PGUP));
+		if (enc_page_move) {
+			if (clockwise) {
+				tap_code16(C(KC_PGDN));
+			} else {
+				tap_code16(C(KC_PGUP));
+			}
+		} else{
+			if (clockwise) {
+				tap_code16(KC_PGDN);
+			} else {
+				tap_code16(KC_PGUP);
+			}
 		}
 	}
 	else if (index == 1) {

@@ -47,9 +47,9 @@ int cur_dance (qk_tap_dance_state_t *state);
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	[0] = LAYOUT(
-		TOGG_ENC, TD(FFOX_TABCTRL),	KC_MPLY,
-		KC_TRNS, A(C(KC_R)),		TD(FIREFOX_TABS),
-		KC_TRNS, C(KC_PGDN),		C(KC_T)
+		TOGG_ENC, 		TD(FFOX_TABCTRL),	KC_MPLY,
+		A(KC_W), 		A(C(KC_R)),		TD(FIREFOX_TABS),
+		C(A(KC_1)), 	C(KC_PGDN),		C(KC_T)
 	),
 
 };

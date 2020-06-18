@@ -28,7 +28,8 @@ enum td_keycodes {
 	WIN_SWITCH,
 	WIN_CLOSE,
 	FFOX_TABCTRL,
-	FIREFOX_TABS
+	FIREFOX_TABS,
+	FFOX_CLOSE
 };
 
 // define a type containing as many tapdance states as you need
@@ -49,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[0] = LAYOUT(
 		TOGG_ENC, 		TD(FFOX_TABCTRL),	KC_MPLY,
 		A(KC_W), 		A(C(KC_R)),		TD(FIREFOX_TABS),
-		C(A(KC_1)), 	C(KC_PGDN),		C(KC_T)
+		TD(FFOX_CLOSE), C(KC_PGDN),		C(KC_T)
 	),
 
 };
@@ -153,6 +154,20 @@ void ffox_tabctrl_func (qk_tap_dance_state_t *state, void *user_data) {
 	}
 }
 
+void ffox_close_func (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(C(A(KC_1)));
+			break;
+		case DOUBLE_TAP:
+			tap_code16(C(A(KC_2)));
+			break;
+		default:
+			break;
+	}
+}
+
 void firetab_func (qk_tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
@@ -175,5 +190,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 	[WIN_SWITCH] = ACTION_TAP_DANCE_FN(winswitch_fun),
 	[WIN_CLOSE] = ACTION_TAP_DANCE_FN(winclose_fun),
 	[FIREFOX_TABS] = ACTION_TAP_DANCE_FN(firetab_func),
-	[FFOX_TABCTRL] = ACTION_TAP_DANCE_FN(ffox_tabctrl_func)
+	[FFOX_TABCTRL] = ACTION_TAP_DANCE_FN(ffox_tabctrl_func),
+	[FFOX_CLOSE] = ACTION_TAP_DANCE_FN(ffox_close_func),
 };

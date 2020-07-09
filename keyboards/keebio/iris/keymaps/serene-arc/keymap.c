@@ -224,7 +224,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 void encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == 0) {
-		if (layer_state_is(_QWERTY)) {
+		if (layer_state_is(_QWERTY) || layer_state_is(_GAME)) {
 			if (!is_alt_tab_active) {
 				is_alt_tab_active = true;
 				register_code(KC_LALT);
@@ -258,7 +258,7 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 		}
 	}
 	else if (index == 1) {
-		if (layer_state_is(_QWERTY)) {
+		if (layer_state_is(_QWERTY) || layer_state_is(_GAME)) {
 			if (clockwise) {
 				tap_code(KC_PGDN);
 			} else {

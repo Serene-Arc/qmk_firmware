@@ -15,7 +15,8 @@ enum {
 	TD_8_AST = 0,
 	TD_SPC_SENT, 
 	DISC_DN, 
-	DISC_UP
+	DISC_UP,
+	PASTE
 };
 
 // define a type containing as many tapdance states as you need
@@ -87,7 +88,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┤							 ├────────┼────────┼────────┼────────┼────────┼────────┤
 	 KC_PGDN, KC_MNXT, LCA(KC_DOWN), LCA(KC_UP), TD(DISC_UP), KC_MINS,				  KC_EQL,  KC_HOME, RGB_HUI, RGB_SAI, RGB_VAI, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐		┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-	 S(KC_INS), KC_MUTE, KC_MPLY, KC_VOLD, TD(DISC_DN), KC_UNDS, KC_LPRN,	 _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
+	 TD(PASTE), KC_MUTE, KC_MPLY, KC_VOLD, TD(DISC_DN), KC_UNDS, KC_LPRN,	 _______, KC_PLUS, KC_END,	RGB_HUD, RGB_SAD, RGB_VAD, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘		└───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
 									_______, _______, KC_DOT,					 _______, _______, _______
 								// └────────┴────────┴────────┘					└────────┴────────┴────────┘
@@ -352,9 +353,24 @@ void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
 	}
 }
 
+void paste_fun (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(S(KC_INS));
+			break;
+		case DOUBLE_TAP:
+			tap_code16(C(KC_V));
+			break;
+		default:
+			break;
+	}
+}
+
 qk_tap_dance_action_t tap_dance_actions[] = {
 	[DISC_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
 	[DISC_UP] = ACTION_TAP_DANCE_FN(discup_fun),
 	[TD_8_AST]  = ACTION_TAP_DANCE_DOUBLE(KC_8, KC_PAST),
-	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset) 
+	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset),
+	[PASTE]  = ACTION_TAP_DANCE_FN(paste_fun)
 };

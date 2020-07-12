@@ -70,15 +70,15 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == 0) {
 		if (enc_page_move) {
 			if (clockwise) {
-				tap_code16(C(KC_PGDN));
-			} else {
-				tap_code16(C(KC_PGUP));
-			}
-		} else{
-			if (clockwise) {
 				tap_code16(KC_PGDN);
 			} else {
 				tap_code16(KC_PGUP);
+			}
+		} else{
+			if (clockwise) {
+				tap_code16(C(KC_PGDN));
+			} else {
+				tap_code16(C(KC_PGUP));
 			}
 		}
 	}

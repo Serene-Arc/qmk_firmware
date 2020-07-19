@@ -17,7 +17,7 @@
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
-bool enc_page_move = false;
+bool enc_page_move = true;
 
 enum custom_keycodes {
 	TOGG_ENC = SAFE_RANGE,

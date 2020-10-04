@@ -50,8 +50,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	[0] = LAYOUT(
 		TOGG_ENC, 		TD(FFOX_TABCTRL),	KC_MPLY,
-		A(KC_W), 		A(C(KC_R)),		TD(FIREFOX_TABS),
-		TD(FFOX_CLOSE), C(KC_PGDN),		TD(FFOX_NEW)
+		A(KC_W), 		KC_F5,				TD(FIREFOX_TABS),
+		TD(FFOX_CLOSE), C(KC_PGDN),			TD(FFOX_NEW)
 	),
 
 };

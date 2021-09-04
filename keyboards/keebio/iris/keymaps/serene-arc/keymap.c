@@ -10,7 +10,7 @@
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
-uint16_t alt_tab_limit = 500;
+uint16_t alt_tab_limit = 600;
 
 //Tap Dance Declarations
 enum {
@@ -248,7 +248,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
-void encoder_update_user(uint8_t index, bool clockwise) {
+bool encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == 0) {
 		if (layer_state_is(_RAISE)) {
 			if (clockwise) {
@@ -297,6 +297,7 @@ void encoder_update_user(uint8_t index, bool clockwise) {
 			}
 		}
 	}
+	return true;
 }
 
 void matrix_scan_user(void) {

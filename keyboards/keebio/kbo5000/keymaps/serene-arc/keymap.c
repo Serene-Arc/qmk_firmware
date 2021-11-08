@@ -1,0 +1,242 @@
+#include QMK_KEYBOARD_H
+
+bool is_alt_tab_active = false;
+uint16_t alt_tab_timer = 0;
+uint16_t alt_tab_limit = 600;
+
+// define a type containing as many tapdance states as you need
+typedef enum {
+  SINGLE_TAP,
+  SINGLE_HOLD,
+  DOUBLE_TAP
+} td_state_t;
+
+//Tap Dance Declarations
+enum {
+	TD_SPC_SENT = 0, 
+	DISC_DN, 
+	DISC_UP,
+};
+
+enum custom_keycodes {
+	CLEAR_MOD = SAFE_RANGE,
+	WIN_SWCH,
+	A_ESC,
+	VIM_N1,
+	VIM_N2,
+	VIM_N3,
+	VIM_N4,
+	VIM_N5,
+	VIM_N6,
+	VIM_N7,
+};
+
+// create a global instance of the tapdance state type
+static td_state_t td_state;
+
+// function to determine the current tapdance state
+int cur_dance (qk_tap_dance_state_t *state);
+
+enum encoder_names {
+  LEFT_HALF_ENC = 0,
+  RIGHT_HALF_ENC1 = 2,
+  RIGHT_HALF_ENC2,
+};
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+  [0] = LAYOUT_all(
+	KC_ESC,			  KC_F1,   KC_F2,	KC_F3,	 KC_F4,   KC_F5,   KC_F6,			 KC_F7,   KC_F8,			KC_F9,	 KC_F10,  KC_F11,  KC_F12,	KC_PSCR, KC_SLCK, KC_MPLY,
+	WIN_SWCH,KC_ESC,  KC_1,    KC_2,	KC_3,	 KC_4,	  KC_5,    KC_6,			 KC_7,	  KC_8,    KC_9,	KC_0,	 KC_MINS, KC_EQL,  KC_BSPC,	KC_DEL, KC_INS,  KC_PGUP,
+	A_ESC,	 KC_TAB,  KC_Q,    KC_W,	KC_E,	 KC_R,	  KC_T,						 KC_Y,	  KC_U,    KC_I,	KC_O,	 KC_P,	  KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,  KC_PGDN,
+	C(A(KC_T)),   KC_CAPS, KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,					 KC_H,	  KC_J,    KC_K,	KC_L,	 KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,  KC_HOME, KC_END,
+	KC_F16,  KC_LSFT, KC_GRV,  KC_Z,	KC_X,	 KC_C,	  KC_V,    KC_B,			 KC_N,	  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,		   KC_RSFT,			 KC_UP,
+	KC_F17,  KC_LCTL, KC_LALT, KC_LGUI, MO(1),	 KC_SPC,  TD(TD_SPC_SENT),					 MO(1),   TD(TD_SPC_SENT),  KC_LALT, KC_LGUI,				   KC_LCTL, KC_LEFT, KC_DOWN, KC_RGHT
+  ),
+
+  [1] = LAYOUT_all(
+	BL_STEP,		  RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD,			 _______, _______,			_______, _______, _______, _______, _______, _______, _______,
+	RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,			 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+	RGB_MOD, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+	_______, _______, _______, _______, _______, _______, _______, _______,			 _______, _______, _______, _______, _______,		   _______,			 TD(DISC_UP),
+	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______,				   _______, _______, TD(DISC_DN), _______
+  ),
+
+};
+
+bool encoder_update_user(uint8_t index, bool clockwise) {
+	if (index == LEFT_HALF_ENC) {
+		if (clockwise) {
+			tap_code(KC_PGDN);
+		} else {
+			tap_code(KC_PGUP);
+		}
+	} else if (index == RIGHT_HALF_ENC1) {
+		if (clockwise) {
+			tap_code(KC_VOLU);
+		} else {
+			tap_code(KC_VOLD);
+		}
+	} else if (index == RIGHT_HALF_ENC2) {
+		if (!is_alt_tab_active) {
+			is_alt_tab_active = true;
+			register_code(KC_LALT);
+		}
+		if (clockwise) {
+			alt_tab_timer = timer_read();
+			tap_code16(KC_TAB);
+		} else {
+			alt_tab_timer = timer_read();
+			tap_code16(S(KC_TAB));
+		}
+	}
+	return true;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+	switch (keycode) {
+		case A_ESC:
+			if (record->event.pressed) {
+				if (!is_alt_tab_active) {
+					is_alt_tab_active = true;
+					register_code(KC_LALT);
+				}
+				alt_tab_timer = timer_read();
+				tap_code16(KC_ESC);
+			}
+			break;
+		case WIN_SWCH:
+			if (record->event.pressed) {
+				if (!is_alt_tab_active) {
+					is_alt_tab_active = true;
+					register_code(KC_LALT);
+				}
+				alt_tab_timer = timer_read();
+				tap_code16(KC_F6);
+			}
+			break;
+		case VIM_N1:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm1");
+			}
+			break;
+		case VIM_N2:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm2");
+			}
+			break;
+		case VIM_N3:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm3");
+			}
+			break;
+		case VIM_N4:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm4");
+			}
+			break;
+		case VIM_N5:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm5");
+			}
+			break;
+		case VIM_N6:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm6");
+			}
+			break;
+		case VIM_N7:
+			if (record->event.pressed) {
+				SEND_STRING("$!nm7");
+			}
+			break;
+		default:
+			break;
+	}
+	return true;
+}
+
+void matrix_scan_user(void) {
+	if (is_alt_tab_active) {
+		if (timer_elapsed(alt_tab_timer) > alt_tab_limit) {
+			unregister_code(KC_LALT);
+			is_alt_tab_active = false;
+		}
+	}
+}
+
+int cur_dance (qk_tap_dance_state_t *state) {
+	if (state->count == 1) {
+		if (state->interrupted || !state->pressed) { return SINGLE_TAP; }
+		else { return SINGLE_HOLD; }
+	}
+	if (state->count == 2) { return DOUBLE_TAP; }
+	else { return 3; } // any number higher than the maximum state value you return above
+}
+
+void td_spacesent_finished (qk_tap_dance_state_t *state, void *user_data){
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			register_code(KC_SPACE);
+			break;
+		case SINGLE_HOLD:
+			register_code(KC_SPACE);
+			break;
+		case DOUBLE_TAP:
+			SEND_STRING(". ");
+			break;
+		default:
+			break;
+	}
+}
+
+void td_spacesent_reset (qk_tap_dance_state_t *state, void *user_data){
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			unregister_code(KC_SPACE);
+			break;
+		case SINGLE_HOLD:
+			unregister_code(KC_SPACE);
+			break;
+		case DOUBLE_TAP:
+			break;
+		default:
+			break;
+	}
+}
+
+void discdown_fun (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(A(KC_DOWN));
+			break;
+		case DOUBLE_TAP:
+			tap_code16(S(A(KC_DOWN)));
+			break;
+		default:
+			break;
+	}
+}
+
+void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(A(KC_UP));
+			break;
+		case DOUBLE_TAP:
+			tap_code16(S(A(KC_UP)));
+			break;
+		default:
+			break;
+	}
+}
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+	[DISC_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
+	[DISC_UP] = ACTION_TAP_DANCE_FN(discup_fun),
+	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset),
+};

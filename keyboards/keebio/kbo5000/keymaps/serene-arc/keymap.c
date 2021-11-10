@@ -155,6 +155,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				clear_oneshot_mods();
 				clear_mods();
 				clear_keyboard();
+				led_t state = host_keyboard_led_state();
+				if (state.caps_lock == true)
+					tap_code16(KC_CAPS);
 			}
 			break;
 		default:

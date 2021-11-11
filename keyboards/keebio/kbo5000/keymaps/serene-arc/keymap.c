@@ -16,6 +16,8 @@ enum {
 	TD_SPC_SENT = 0, 
 	DISC_DN, 
 	DISC_UP,
+	TD_BRACK_O,
+	TD_BRACK_C,
 };
 
 enum custom_keycodes {
@@ -50,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	A_ESC,	 KC_TAB,  KC_Q,    KC_W,	KC_E,	 KC_R,	  KC_T,						 KC_Y,	  KC_U,    KC_I,	KC_O,	 KC_P,	  KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,  KC_PGDN,
 	C(A(KC_T)),   KC_CAPS, KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,					 KC_H,	  KC_J,    KC_K,	KC_L,	 KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,  KC_HOME, KC_END,
 	KC_F16,  KC_LSPO, KC_GRV,  KC_Z,	KC_X,	 KC_C,	  KC_V,    KC_B,			 KC_N,	  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,		   KC_RSPC,			 KC_UP,
-	KC_F17,  KC_LCTL, KC_LALT, KC_LGUI, MO(1),	 SFT_T(KC_ENT),  TD(TD_SPC_SENT),	 MO(1),   TD(TD_SPC_SENT),  KC_LALT, KC_LGUI,				   KC_LCTL, KC_LEFT, KC_DOWN, KC_RGHT
+	KC_F17,  TD(TD_BRACK_O), KC_LALT, KC_LGUI, MO(1),	 SFT_T(KC_ENT),  TD(TD_SPC_SENT),	 MO(1),   TD(TD_SPC_SENT),  KC_LALT, KC_LGUI,  TD(TD_BRACK_C), KC_LEFT, KC_DOWN, KC_RGHT
   ),
 
   [1] = LAYOUT_all(
@@ -202,7 +204,6 @@ void td_spacesent_finished (qk_tap_dance_state_t *state, void *user_data){
 }
 
 void td_spacesent_reset (qk_tap_dance_state_t *state, void *user_data){
-	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
 			unregister_code(KC_SPACE);
@@ -211,6 +212,54 @@ void td_spacesent_reset (qk_tap_dance_state_t *state, void *user_data){
 			unregister_code(KC_SPACE);
 			break;
 		case DOUBLE_TAP:
+			break;
+		default:
+			break;
+	}
+}
+
+void td_ctrlbracketclosed_finished (qk_tap_dance_state_t *state, void *user_data){
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(S(KC_RBRC));
+			break;
+		case SINGLE_HOLD:
+			register_code16(KC_LCTL);
+			break;
+		default:
+			break;
+	}
+}
+
+void td_ctrlbracketclosed_reset (qk_tap_dance_state_t *state, void *user_data){
+	switch (td_state) {
+		case SINGLE_HOLD:
+			unregister_code16(KC_LCTL);
+			break;
+		default:
+			break;
+	}
+}
+
+void td_ctrlbracketopen_finished(qk_tap_dance_state_t *state, void *user_data){
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			tap_code16(S(KC_LBRC));
+			break;
+		case SINGLE_HOLD:
+			register_code16(KC_LCTL);
+			break;
+		default:
+			break;
+	}
+}
+
+void td_ctrlbracketopen_reset (qk_tap_dance_state_t *state, void *user_data){
+	switch (td_state) {
+		case SINGLE_HOLD:
+			unregister_code16(KC_LCTL);
 			break;
 		default:
 			break;
@@ -249,4 +298,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 	[DISC_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
 	[DISC_UP] = ACTION_TAP_DANCE_FN(discup_fun),
 	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset),
+	[TD_BRACK_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketopen_finished, td_ctrlbracketopen_reset),
+	[TD_BRACK_C] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketclosed_finished, td_ctrlbracketclosed_reset),
 };

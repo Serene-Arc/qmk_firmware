@@ -186,6 +186,15 @@ int cur_dance (qk_tap_dance_state_t *state) {
 	else { return 3; } // any number higher than the maximum state value you return above
 }
 
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+	switch (keycode) {
+		case TD_BRACK_O:
+			return TAPPING_TERM - 75;
+		default:
+			return TAPPING_TERM;
+	}
+}
+
 void td_spacesent_finished (qk_tap_dance_state_t *state, void *user_data){
 	td_state = cur_dance(state);
 	switch (td_state) {

@@ -31,6 +31,7 @@ enum custom_keycodes {
 	VIM_N5,
 	VIM_N6,
 	VIM_N7,
+	TAB_SWTH,
 };
 
 // create a global instance of the tapdance state type
@@ -51,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	WIN_SWCH,KC_ESC,  KC_1,    KC_2,	KC_3,	 KC_4,	  KC_5,    KC_6,			 KC_7,	  KC_8,    KC_9,	KC_0,	 KC_MINS, KC_EQL,  KC_BSPC,	KC_DEL, KC_INS,  KC_PGUP,
 	A_ESC,	 KC_TAB,  KC_Q,    KC_W,	KC_E,	 KC_R,	  KC_T,						 KC_Y,	  KC_U,    KC_I,	KC_O,	 KC_P,	  KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,  KC_PGDN,
 	C(A(KC_T)),   KC_CAPS, KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,					 KC_H,	  KC_J,    KC_K,	KC_L,	 KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,  KC_HOME, KC_END,
-	KC_F16,  KC_LSPO, KC_GRV,  KC_Z,	KC_X,	 KC_C,	  KC_V,    KC_B,			 KC_N,	  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,		   KC_RSPC,			 KC_UP,
+	TAB_SWTH,  KC_LSPO, KC_GRV,  KC_Z,	KC_X,	 KC_C,	  KC_V,    KC_B,			 KC_N,	  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,		   KC_RSPC,			 KC_UP,
 	KC_F17,  KC_LCTL, TD(TD_BRACK_O), KC_LGUI, MO(1),	 SFT_T(KC_ENT),  KC_SPC,	 MO(1),   TD(TD_SPC_SENT),  TD(TD_BRACK_C), KC_LGUI, KC_LCTL, KC_LEFT, KC_DOWN, KC_RGHT
   ),
 
@@ -160,6 +161,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				led_t state = host_keyboard_led_state();
 				if (state.caps_lock == true)
 					tap_code16(KC_CAPS);
+			}
+			break;
+		case TAB_SWTH:
+			if (record->event.pressed) {
+				if (get_mods() & MOD_MASK_SHIFT){
+					int current = get_mods();
+					del_mods(MOD_MASK_SHIFT);
+					tap_code16(C(KC_PGUP));
+					set_mods(current);
+				} else {
+					tap_code16(C(KC_PGDN));
+				}
 			}
 			break;
 		default:

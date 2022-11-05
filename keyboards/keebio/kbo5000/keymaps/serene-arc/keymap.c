@@ -13,7 +13,7 @@ typedef enum {
 
 //Tap Dance Declarations
 enum {
-	TD_SPC_SENT = 0, 
+	TD_SPC_SENT = 1, 
 	DISC_DN, 
 	DISC_UP,
 	TD_BRACK_O,
@@ -53,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	A_ESC,	 KC_TAB,  KC_Q,    KC_W,	KC_E,	 KC_R,	  KC_T,						 KC_Y,	  KC_U,    KC_I,	KC_O,	 KC_P,	  KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,  KC_PGDN,
 	C(A(KC_T)),   KC_CAPS, KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,					 KC_H,	  KC_J,    KC_K,	KC_L,	 KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,  KC_HOME, KC_END,
 	TAB_SWTH,  KC_LSPO, KC_GRV,  KC_Z,	KC_X,	 KC_C,	  KC_V,    KC_B,			 KC_N,	  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,		   KC_RSPC,			 KC_UP,
-	S(KC_7),  KC_LCTL, TD(TD_BRACK_O), KC_LGUI, MO(1),	 SFT_T(KC_ENT),  KC_SPC,	 MO(1),   TD(TD_SPC_SENT),  TD(TD_BRACK_C), KC_LGUI, KC_LCTL, KC_LEFT, KC_DOWN, KC_RGHT
+	KC_MS_BTN3,  KC_LCTL, TD(TD_BRACK_O), KC_LGUI, MO(1),	 SFT_T(KC_ENT),  KC_SPC,	 MO(1),   TD(TD_SPC_SENT),  TD(TD_BRACK_C), KC_LGUI, KC_LCTL, KC_LEFT, KC_DOWN, KC_RGHT
   ),
 
   [1] = LAYOUT_all(
@@ -62,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	RGB_MOD, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	_______, _______, _______, _______, _______, _______, _______, _______,			 _______, _______, _______, _______, _______,		   _______,			 TD(DISC_UP),
-	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______,				   _______, _______, TD(DISC_DN), _______
+	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______,				   _______, KC_VOLD, TD(DISC_DN), KC_VOLU
   ),
 
 };
@@ -70,10 +70,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 bool encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == LEFT_HALF_ENC) {
 		if (clockwise) {
-			tap_code16(KC_PGDN);
+			tap_code16(KC_VOLU);
 		} else {
-			tap_code16(KC_PGUP);
+			tap_code16(KC_VOLD);
 		}
+		/* if (clockwise) { */
+		/* 	tap_code16(KC_PGDN); */
+		/* } else { */
+		/* 	tap_code16(KC_PGUP); */
+		/* } */
 	} else if (index == RIGHT_HALF_ENC1) {
 		if (clockwise) {
 			tap_code16(KC_VOLU);
@@ -199,15 +204,6 @@ int cur_dance (qk_tap_dance_state_t *state) {
 	else { return 3; } // any number higher than the maximum state value you return above
 }
 
-uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-	switch (keycode) {
-		case TD_BRACK_O:
-			return TAPPING_TERM - 75;
-		default:
-			return TAPPING_TERM;
-	}
-}
-
 void td_spacesent_finished (qk_tap_dance_state_t *state, void *user_data){
 	td_state = cur_dance(state);
 	switch (td_state) {
@@ -314,6 +310,21 @@ void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
 		default:
 			break;
 	}
+}
+
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+		case TD(DISC_UP):
+		case TD(DISC_DN):
+			return 200;
+		case TD(TD_SPC_SENT):
+			return 500;
+		case TD(TD_BRACK_O):
+		case TD(TD_BRACK_C):
+			return 120;
+        default:
+            return 200;
+    }
 }
 
 qk_tap_dance_action_t tap_dance_actions[] = {

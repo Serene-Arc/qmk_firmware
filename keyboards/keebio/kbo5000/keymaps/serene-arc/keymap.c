@@ -18,6 +18,7 @@ enum {
 	DISC_UP,
 	TD_BRACK_O,
 	TD_BRACK_C,
+	LATEX_E,
 };
 
 enum custom_keycodes {
@@ -32,6 +33,8 @@ enum custom_keycodes {
 	VIM_N6,
 	VIM_N7,
 	TAB_SWTH,
+	ENQUOTE,
+	EMPH
 };
 
 // create a global instance of the tapdance state type
@@ -53,13 +56,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	A_ESC,	 KC_TAB,  KC_Q,    KC_W,	KC_E,	 KC_R,	  KC_T,						 KC_Y,	  KC_U,    KC_I,	KC_O,	 KC_P,	  KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,  KC_PGDN,
 	C(A(KC_T)),   KC_NO, KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,					 KC_H,	  KC_J,    KC_K,	KC_L,	 KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,  KC_HOME, KC_END,
 	TAB_SWTH,  KC_LSPO, KC_GRV,  KC_Z,	KC_X,	 KC_C,	  KC_V,    KC_B,			 KC_N,	  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,		   KC_RSPC,			 KC_UP,
-	KC_MS_BTN3,  KC_LCTL, TD(TD_BRACK_O), KC_LGUI, MO(1),	 SFT_T(KC_ENT),  KC_SPC,	 MO(1),   TD(TD_SPC_SENT),  TD(TD_BRACK_C), KC_LGUI, KC_LCTL, KC_LEFT, KC_DOWN, KC_RGHT
+	KC_MS_BTN3,  KC_LCTL, TD(TD_BRACK_O), KC_LGUI, MO(1),	 SFT_T(KC_ENT),  KC_SPC,	 MO(1),   TD(TD_SPC_SENT),  TD(TD_BRACK_C), KC_LGUI, KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
   ),
 
   [1] = LAYOUT_all(
 	RESET,			  RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD,			 _______, _______,			_______, _______, _______, _______, _______, _______, _______,
 	RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,			 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-	RGB_MOD, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+	RGB_MOD, _______, _______, _______, TD(LATEX_E), _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	_______, KC_CAPS, _______, _______, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	_______, _______, _______, _______, _______, _______, _______, _______,			 _______, _______, _______, _______, _______,		   _______,			 TD(DISC_UP),
 	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______,				   _______, KC_VOLD, TD(DISC_DN), KC_VOLU
@@ -312,6 +315,20 @@ void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
 	}
 }
 
+void latex_e_func (qk_tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			SEND_STRING("\\enquote{");
+			break;
+		case DOUBLE_TAP:
+			SEND_STRING("\\emph{");
+			break;
+		default:
+			break;
+	}
+}
+
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 		case TD(DISC_UP):
@@ -333,4 +350,5 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset),
 	[TD_BRACK_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketopen_finished, td_ctrlbracketopen_reset),
 	[TD_BRACK_C] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketclosed_finished, td_ctrlbracketclosed_reset),
+	[LATEX_E] = ACTION_TAP_DANCE_FN(latex_e_func),
 };

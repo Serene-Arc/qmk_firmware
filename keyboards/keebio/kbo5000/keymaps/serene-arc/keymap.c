@@ -41,7 +41,7 @@ enum custom_keycodes {
 static td_state_t td_state;
 
 // function to determine the current tapdance state
-int cur_dance (qk_tap_dance_state_t *state);
+int cur_dance (tap_dance_state_t *state);
 
 enum encoder_names {
   LEFT_HALF_ENC = 0,
@@ -55,12 +55,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	WIN_SWCH,KC_ESC,  KC_1,    KC_2,	KC_3,	 KC_4,	  KC_5,    KC_6,			 KC_7,	  KC_8,    KC_9,	KC_0,	 KC_MINS, KC_EQL,  KC_BSPC,	KC_DEL, KC_INS,  KC_PGUP,
 	A_ESC,	 KC_TAB,  KC_Q,    KC_W,	KC_E,	 KC_R,	  KC_T,						 KC_Y,	  KC_U,    KC_I,	KC_O,	 KC_P,	  KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,  KC_PGDN,
 	C(A(KC_T)),   KC_NO, KC_A,    KC_S,	KC_D,	 KC_F,	  KC_G,					 KC_H,	  KC_J,    KC_K,	KC_L,	 KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,  KC_HOME, KC_END,
-	TAB_SWTH,  KC_LSPO, KC_GRV,  KC_Z,	KC_X,	 KC_C,	  KC_V,    KC_B,			 KC_N,	  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,		   KC_RSPC,			 KC_UP,
+	TAB_SWTH,  SC_LSPO, KC_GRV,  KC_Z,	KC_X,	 KC_C,	  KC_V,    KC_B,			 KC_N,	  KC_M,    KC_COMM, KC_DOT,  KC_SLSH,		   SC_RSPC,			 KC_UP,
 	KC_MS_BTN3,  KC_LCTL, TD(TD_BRACK_O), KC_LGUI, MO(1),	 SFT_T(KC_ENT),  KC_SPC,	 MO(1),   TD(TD_SPC_SENT),  TD(TD_BRACK_C), KC_LGUI, KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
   ),
 
   [1] = LAYOUT_all(
-	RESET,			  RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD,			 _______, _______,			_______, _______, _______, _______, _______, _______, _______,
+	QK_RBT,			  RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD,			 _______, _______,			_______, _______, _______, _______, _______, _______, _______,
 	RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,			 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	RGB_MOD, _______, _______, _______, TD(LATEX_E), _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	_______, KC_CAPS, _______, _______, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -198,7 +198,7 @@ void matrix_scan_user(void) {
 	}
 }
 
-int cur_dance (qk_tap_dance_state_t *state) {
+int cur_dance (tap_dance_state_t *state) {
 	if (state->count == 1) {
 		if (state->interrupted || !state->pressed) { return SINGLE_TAP; }
 		else { return SINGLE_HOLD; }
@@ -207,7 +207,7 @@ int cur_dance (qk_tap_dance_state_t *state) {
 	else { return 3; } // any number higher than the maximum state value you return above
 }
 
-void td_spacesent_finished (qk_tap_dance_state_t *state, void *user_data){
+void td_spacesent_finished (tap_dance_state_t *state, void *user_data){
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
@@ -224,7 +224,7 @@ void td_spacesent_finished (qk_tap_dance_state_t *state, void *user_data){
 	}
 }
 
-void td_spacesent_reset (qk_tap_dance_state_t *state, void *user_data){
+void td_spacesent_reset (tap_dance_state_t *state, void *user_data){
 	switch (td_state) {
 		case SINGLE_TAP:
 			unregister_code(KC_SPACE);
@@ -239,7 +239,7 @@ void td_spacesent_reset (qk_tap_dance_state_t *state, void *user_data){
 	}
 }
 
-void td_ctrlbracketclosed_finished (qk_tap_dance_state_t *state, void *user_data){
+void td_ctrlbracketclosed_finished (tap_dance_state_t *state, void *user_data){
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
@@ -253,7 +253,7 @@ void td_ctrlbracketclosed_finished (qk_tap_dance_state_t *state, void *user_data
 	}
 }
 
-void td_ctrlbracketclosed_reset (qk_tap_dance_state_t *state, void *user_data){
+void td_ctrlbracketclosed_reset (tap_dance_state_t *state, void *user_data){
 	switch (td_state) {
 		case SINGLE_HOLD:
 			unregister_code16(KC_LALT);
@@ -263,7 +263,7 @@ void td_ctrlbracketclosed_reset (qk_tap_dance_state_t *state, void *user_data){
 	}
 }
 
-void td_ctrlbracketopen_finished(qk_tap_dance_state_t *state, void *user_data){
+void td_ctrlbracketopen_finished(tap_dance_state_t *state, void *user_data){
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
@@ -277,7 +277,7 @@ void td_ctrlbracketopen_finished(qk_tap_dance_state_t *state, void *user_data){
 	}
 }
 
-void td_ctrlbracketopen_reset (qk_tap_dance_state_t *state, void *user_data){
+void td_ctrlbracketopen_reset (tap_dance_state_t *state, void *user_data){
 	switch (td_state) {
 		case SINGLE_HOLD:
 			unregister_code16(KC_LALT);
@@ -287,7 +287,7 @@ void td_ctrlbracketopen_reset (qk_tap_dance_state_t *state, void *user_data){
 	}
 }
 
-void discdown_fun (qk_tap_dance_state_t *state, void *user_data) {
+void discdown_fun (tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
@@ -301,7 +301,7 @@ void discdown_fun (qk_tap_dance_state_t *state, void *user_data) {
 	}
 }
 
-void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
+void discup_fun (tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
@@ -315,7 +315,7 @@ void discup_fun (qk_tap_dance_state_t *state, void *user_data) {
 	}
 }
 
-void latex_e_func (qk_tap_dance_state_t *state, void *user_data) {
+void latex_e_func (tap_dance_state_t *state, void *user_data) {
 	td_state = cur_dance(state);
 	switch (td_state) {
 		case SINGLE_TAP:
@@ -344,7 +344,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-qk_tap_dance_action_t tap_dance_actions[] = {
+tap_dance_action_t tap_dance_actions[] = {
 	[DISC_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
 	[DISC_UP] = ACTION_TAP_DANCE_FN(discup_fun),
 	[TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset),

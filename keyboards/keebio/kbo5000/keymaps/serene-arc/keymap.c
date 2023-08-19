@@ -13,8 +13,8 @@ typedef enum {
 
 //Tap Dance Declarations
 enum {
-	TD_SPC_SENT = 1, 
-	DISC_DN, 
+	TD_SPC_SENT = 1,
+	DISC_DN,
 	DISC_UP,
 	TD_BRACK_O,
 	TD_BRACK_C,
@@ -44,8 +44,8 @@ static td_state_t td_state;
 int cur_dance (tap_dance_state_t *state);
 
 enum encoder_names {
-  LEFT_HALF_ENC = 0,
-  RIGHT_HALF_ENC1 = 2,
+  LEFT_HALF_ENC,
+  RIGHT_HALF_ENC1,
   RIGHT_HALF_ENC2,
 };
 
@@ -73,16 +73,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 bool encoder_update_user(uint8_t index, bool clockwise) {
 	if (index == LEFT_HALF_ENC) {
 		if (clockwise) {
-			tap_code16(KC_VOLU);
+		tap_code16(KC_PGDN);
 		} else {
-			tap_code16(KC_VOLD);
+		tap_code16(KC_PGUP);
 		}
-		/* if (clockwise) { */
-		/* 	tap_code16(KC_PGDN); */
-		/* } else { */
-		/* 	tap_code16(KC_PGUP); */
-		/* } */
-	} else if (index == RIGHT_HALF_ENC1) {
+		} else if (index == RIGHT_HALF_ENC1) {
 		if (clockwise) {
 			tap_code16(KC_VOLU);
 		} else {

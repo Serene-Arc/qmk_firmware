@@ -19,6 +19,7 @@ enum {
 	TD_BRACK_O,
 	TD_BRACK_C,
 	LATEX_E,
+    LATEX_S
 };
 
 enum custom_keycodes {
@@ -35,8 +36,7 @@ enum custom_keycodes {
 	TAB_SWTH,
 	ENQUOTE,
 	EMPH,
-    LATEX_CHAP,
-    LATEX_SEC
+    LATEX_CHAP
 };
 
 // create a global instance of the tapdance state type
@@ -65,7 +65,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	QK_BOOT,			  RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD,			 _______, _______,			_______, _______, _______, _______, _______, _______, _______,
 	RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,			 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	RGB_MOD, _______, _______, _______, TD(LATEX_E), _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-	_______, KC_CAPS, _______, LATEX_SEC, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+	_______, KC_CAPS, _______, TD(LATEX_S), _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	_______, _______, _______, _______, _______, LATEX_CHAP, _______, _______,			 _______, _______, _______, _______, _______,		   _______,			 TD(DISC_UP),
 	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______,				   _______, KC_VOLD, TD(DISC_DN), KC_VOLU
   ),
@@ -131,11 +131,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case VIM_N2:
 			if (record->event.pressed) {
 				SEND_STRING("$!nm2");
-			}
-			break;
-		case LATEX_SEC:
-			if (record->event.pressed) {
-				SEND_STRING("\\section{");
 			}
 			break;
 		case LATEX_CHAP:
@@ -336,6 +331,20 @@ void latex_e_func (tap_dance_state_t *state, void *user_data) {
 	}
 }
 
+void latex_s_func (tap_dance_state_t *state, void *user_data) {
+	td_state = cur_dance(state);
+	switch (td_state) {
+		case SINGLE_TAP:
+			SEND_STRING("\\section{");
+			break;
+		case DOUBLE_TAP:
+			SEND_STRING("\\subsection{");
+			break;
+		default:
+			break;
+	}
+}
+
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 		case TD(DISC_UP):
@@ -358,4 +367,5 @@ tap_dance_action_t tap_dance_actions[] = {
 	[TD_BRACK_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketopen_finished, td_ctrlbracketopen_reset),
 	[TD_BRACK_C] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketclosed_finished, td_ctrlbracketclosed_reset),
 	[LATEX_E] = ACTION_TAP_DANCE_FN(latex_e_func),
+	[LATEX_S] = ACTION_TAP_DANCE_FN(latex_s_func),
 };

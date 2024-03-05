@@ -34,7 +34,9 @@ enum custom_keycodes {
 	VIM_N7,
 	TAB_SWTH,
 	ENQUOTE,
-	EMPH
+	EMPH,
+    LATEX_CHAP,
+    LATEX_SEC
 };
 
 // create a global instance of the tapdance state type
@@ -63,8 +65,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	QK_BOOT,			  RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD,			 _______, _______,			_______, _______, _______, _______, _______, _______, _______,
 	RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,			 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 	RGB_MOD, _______, _______, _______, TD(LATEX_E), _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-	_______, KC_CAPS, _______, _______, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-	_______, _______, _______, _______, _______, _______, _______, _______,			 _______, _______, _______, _______, _______,		   _______,			 TD(DISC_UP),
+	_______, KC_CAPS, _______, LATEX_SEC, _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+	_______, _______, _______, _______, _______, LATEX_CHAP, _______, _______,			 _______, _______, _______, _______, _______,		   _______,			 TD(DISC_UP),
 	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______,				   _______, KC_VOLD, TD(DISC_DN), KC_VOLU
   ),
 
@@ -129,6 +131,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case VIM_N2:
 			if (record->event.pressed) {
 				SEND_STRING("$!nm2");
+			}
+			break;
+		case LATEX_SEC:
+			if (record->event.pressed) {
+				SEND_STRING("\\section{");
+			}
+			break;
+		case LATEX_CHAP:
+			if (record->event.pressed) {
+				SEND_STRING("\\chapter{");
 			}
 			break;
 		case VIM_N3:

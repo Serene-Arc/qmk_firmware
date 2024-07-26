@@ -47,6 +47,7 @@ enum custom_keycodes {
     MATH_2,
     ALIGN_EQ,
     ESC_UND,
+    MINT_IN,
 };
 
 // create a global instance of the tapdance state type
@@ -76,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,			 _______, _______, _______, _______, ESC_UND, ALIGN_EQ, _______, _______, _______, _______,
 	RGB_MOD, _______, _______, _______, TD(LATEX_E), _______, LATEX_T,					 _______, LATEX_U, MATH_I, _______, _______, _______, _______, _______, _______, _______,
 	_______, KC_CAPS, _______, TD(LATEX_S), _______, _______, _______,					 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-	_______, _______, _______, _______, _______, LATEX_CHAP, _______, LATEX_B,			 _______, _______, _______, _______, _______,		   _______,			 TD(DISC_UP),
+	_______, _______, _______, _______, _______, LATEX_CHAP, _______, LATEX_B,			 _______, MINT_IN, _______, _______, _______,		   _______,			 TD(DISC_UP),
 	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______,				   _______, KC_MPRV, TD(DISC_DN), KC_MNXT
   ),
 
@@ -201,6 +202,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case ESC_UND:
 			if (record->event.pressed) {
 				SEND_STRING("\\_");
+			}
+			break;
+		case MINT_IN:
+			if (record->event.pressed) {
+				SEND_STRING("\\mintinline{");
 			}
 			break;
 		case ALIGN_EQ:

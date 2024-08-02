@@ -186,7 +186,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			break;
 		case LATEX_B:
 			if (record->event.pressed) {
-				SEND_STRING("\\textbf{");
+				SEND_STRING("\\bm{");
 			}
 			break;
 		case MATH_1:

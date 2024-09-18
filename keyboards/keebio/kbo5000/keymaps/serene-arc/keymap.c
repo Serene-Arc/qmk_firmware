@@ -46,6 +46,7 @@ enum custom_keycodes {
     LATEX_U,
     LATEX_P,
     LATEX_R,
+    LATEX_F,
     MATH_1,
     MATH_2,
     ALIGN_EQ,
@@ -80,7 +81,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	QK_BOOT,			  MATH_1, MATH_2, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD,			 _______, _______,			_______, _______, _______, _______, _______, _______, _______,
 	RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,			 _______, _______, _______, _______, ESC_UND, ALIGN_EQ, _______, _______, _______, _______,
 	RGB_MOD, _______, _______, _______, TD(LATEX_E), LATEX_R, LATEX_T,					 _______, LATEX_U, MATH_I, _______, LATEX_P, _______, _______, _______, _______, _______,
-	_______, KC_CAPS, _______, TD(LATEX_S), _______, _______, _______,					 _______, MATH_J, LATEX_K, _______, _______, _______, _______, _______, _______, _______,
+	_______, KC_CAPS, _______, TD(LATEX_S), _______, LATEX_F, _______,					 _______, MATH_J, LATEX_K, _______, _______, _______, _______, _______, _______, _______,
 	_______, _______, _______, _______, _______, LATEX_CHAP, _______, LATEX_B,			 _______, MINT_IN, _______, _______, _______,		   _______,			 TD(DISC_UP),
 	_______, _______, _______, _______, _______, _______, _______,					 _______, _______, _______, _______,				   _______, KC_MPRV, TD(DISC_DN), KC_MNXT
   ),
@@ -196,6 +197,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case LATEX_K:
 			if (record->event.pressed) {
 				SEND_STRING("\\keyterm{");
+			}
+			break;
+		case LATEX_F:
+			if (record->event.pressed) {
+				SEND_STRING("\\bmF");
 			}
 			break;
 		case LATEX_R:

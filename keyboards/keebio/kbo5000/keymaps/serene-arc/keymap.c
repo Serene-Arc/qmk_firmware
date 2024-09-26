@@ -121,6 +121,11 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
+        case ALIGN_EQ:
+            if (record->event.pressed) {
+                SEND_STRING("&=");
+            }
+            break;
         case A_ESC:
             if (record->event.pressed) {
                 if (!is_alt_tab_active) {
@@ -131,14 +136,106 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code16(KC_ESC);
             }
             break;
-        case WIN_SWCH:
+        case CLEAR_MOD:
             if (record->event.pressed) {
-                if (!is_alt_tab_active) {
-                    is_alt_tab_active = true;
-                    register_code(KC_LALT);
+                clear_oneshot_mods();
+                clear_mods();
+                clear_keyboard();
+                led_t state = host_keyboard_led_state();
+                if (state.caps_lock == true)
+                    tap_code16(KC_CAPS);
+            }
+            break;
+        case ESC_UND:
+            if (record->event.pressed) {
+                SEND_STRING("\\_");
+            }
+            break;
+        case LATEX_B:
+            if (record->event.pressed) {
+                SEND_STRING("\\bm{");
+            }
+            break;
+        case LATEX_CHAP:
+            if (record->event.pressed) {
+                SEND_STRING("\\chapter{");
+            }
+            break;
+        case LATEX_F:
+            if (record->event.pressed) {
+                SEND_STRING("\\bmF");
+            }
+            break;
+        case LATEX_K:
+            if (record->event.pressed) {
+                SEND_STRING("\\keyterm{");
+            }
+            break;
+        case LATEX_P:
+            if (record->event.pressed) {
+                SEND_STRING("\\bmP");
+            }
+            break;
+        case LATEX_R:
+            if (record->event.pressed) {
+                SEND_STRING("\\bmr");
+            }
+            break;
+        case LATEX_T:
+            if (record->event.pressed) {
+                SEND_STRING("\\texttt{");
+            }
+            break;
+        case LATEX_U:
+            if (record->event.pressed) {
+                SEND_STRING("\\underline{");
+            }
+            break;
+        case LATEX_X:
+            if (record->event.pressed) {
+                SEND_STRING("\\bmx");
+            }
+            break;
+        case MATH_1:
+            if (record->event.pressed) {
+                SEND_STRING("^{-1}");
+            }
+            break;
+        case MATH_2:
+            if (record->event.pressed) {
+                SEND_STRING("^2");
+            }
+            break;
+        case MATH_3:
+            if (record->event.pressed) {
+                SEND_STRING("^3");
+            }
+            break;
+        case MATH_I:
+            if (record->event.pressed) {
+                SEND_STRING("_i");
+            }
+            break;
+        case MATH_J:
+            if (record->event.pressed) {
+                SEND_STRING("_j");
+            }
+            break;
+        case MINT_IN:
+            if (record->event.pressed) {
+                SEND_STRING("\\mintinline{");
+            }
+            break;
+        case TAB_SWTH:
+            if (record->event.pressed) {
+                if (get_mods() & MOD_MASK_SHIFT){
+                    int current = get_mods();
+                    del_mods(MOD_MASK_SHIFT);
+                    tap_code16(C(KC_PGUP));
+                    set_mods(current);
+                } else {
+                    tap_code16(C(KC_PGDN));
                 }
-                alt_tab_timer = timer_read();
-                tap_code16(KC_F6);
             }
             break;
         case VIM_N1:
@@ -149,11 +246,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case VIM_N2:
             if (record->event.pressed) {
                 SEND_STRING("$!nm2");
-            }
-            break;
-        case LATEX_CHAP:
-            if (record->event.pressed) {
-                SEND_STRING("\\chapter{");
             }
             break;
         case VIM_N3:
@@ -181,106 +273,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 SEND_STRING("$!nm7");
             }
             break;
-        case LATEX_T:
+        case WIN_SWCH:
             if (record->event.pressed) {
-                SEND_STRING("\\texttt{");
-            }
-            break;
-        case LATEX_U:
-            if (record->event.pressed) {
-                SEND_STRING("\\underline{");
-            }
-            break;
-        case LATEX_B:
-            if (record->event.pressed) {
-                SEND_STRING("\\bm{");
-            }
-            break;
-        case LATEX_K:
-            if (record->event.pressed) {
-                SEND_STRING("\\keyterm{");
-            }
-            break;
-        case LATEX_X:
-            if (record->event.pressed) {
-                SEND_STRING("\\bmx");
-            }
-            break;
-        case LATEX_F:
-            if (record->event.pressed) {
-                SEND_STRING("\\bmF");
-            }
-            break;
-        case LATEX_R:
-            if (record->event.pressed) {
-                SEND_STRING("\\bmr");
-            }
-            break;
-        case LATEX_P:
-            if (record->event.pressed) {
-                SEND_STRING("\\bmP");
-            }
-            break;
-        case MATH_1:
-            if (record->event.pressed) {
-                SEND_STRING("^{-1}");
-            }
-            break;
-        case MATH_2:
-            if (record->event.pressed) {
-                SEND_STRING("^2");
-            }
-            break;
-        case MATH_3:
-            if (record->event.pressed) {
-                SEND_STRING("^3");
-            }
-            break;
-        case ESC_UND:
-            if (record->event.pressed) {
-                SEND_STRING("\\_");
-            }
-            break;
-        case MINT_IN:
-            if (record->event.pressed) {
-                SEND_STRING("\\mintinline{");
-            }
-            break;
-        case ALIGN_EQ:
-            if (record->event.pressed) {
-                SEND_STRING("&=");
-            }
-            break;
-        case MATH_I:
-            if (record->event.pressed) {
-                SEND_STRING("_i");
-            }
-            break;
-        case MATH_J:
-            if (record->event.pressed) {
-                SEND_STRING("_j");
-            }
-            break;
-        case CLEAR_MOD:
-            if (record->event.pressed) {
-                clear_oneshot_mods();
-                clear_mods();
-                clear_keyboard();
-                led_t state = host_keyboard_led_state();
-                if (state.caps_lock == true)
-                    tap_code16(KC_CAPS);
-            }
-            break;
-        case TAB_SWTH:
-            if (record->event.pressed) {
-                if (get_mods() & MOD_MASK_SHIFT){
-                    int current = get_mods();
-                    del_mods(MOD_MASK_SHIFT);
-                    tap_code16(C(KC_PGUP));
-                    set_mods(current);
-                } else {
-                    tap_code16(C(KC_PGDN));
+                if (!is_alt_tab_active) {
+                    is_alt_tab_active = true;
+                    register_code(KC_LALT);
                 }
+                alt_tab_timer = timer_read();
+                tap_code16(KC_F6);
             }
             break;
         default:

@@ -15,13 +15,13 @@ typedef enum {
 
 //Tap Dance Declarations
 enum {
-    TD_SPC_SENT = 1,
     DISC_DN,
     DISC_UP,
-    TD_BRACK_O,
-    TD_BRACK_C,
     LATEX_E,
     LATEX_S,
+    TD_BRACK_C,
+    TD_BRACK_O,
+    TD_SPC_SENT,
 };
 
 enum custom_keycodes {

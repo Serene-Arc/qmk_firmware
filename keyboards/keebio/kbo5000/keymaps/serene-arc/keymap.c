@@ -18,6 +18,7 @@ enum {
     DISC_DN,
     DISC_UP,
     LATEX_E,
+    LATEX_R,
     LATEX_S,
     TD_BRACK_C,
     TD_BRACK_O,
@@ -36,7 +37,6 @@ enum custom_keycodes {
     LATEX_F,
     LATEX_K,
     LATEX_P,
-    LATEX_R,
     LATEX_T,
     LATEX_U,
     LATEX_X,
@@ -82,7 +82,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [1] = LAYOUT_all(
     QK_BOOT,              MATH_1, MATH_2, MATH_3, RGB_SAD, RGB_VAI, RGB_VAD,            _______, _______,          _______, _______, _______, _______, _______, _______, _______,
     RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,            _______, _______, _______, _______, ESC_UND, ALIGN_EQ, _______, _______, _______, _______,
-    RGB_MOD, _______, _______, _______, TD(LATEX_E), LATEX_R, LATEX_T,                   _______, LATEX_U, MATH_I, _______, LATEX_P, _______, _______, _______, _______, _______,
+    RGB_MOD, _______, _______, _______, TD(LATEX_E), TD(LATEX_R), LATEX_T,                   _______, LATEX_U, MATH_I, _______, LATEX_P, _______, _______, _______, _______, _______,
     _______, KC_CAPS, _______, TD(LATEX_S), _______, LATEX_F, _______,                   _______, MATH_J, LATEX_K, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, LATEX_X, LATEX_CHAP, _______, LATEX_B,           _______, MINT_IN, _______, _______, _______,          _______,          TD(DISC_UP),
     _______, _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______,                   _______, KC_MPRV, TD(DISC_DN), KC_MNXT
@@ -174,11 +174,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LATEX_P:
             if (record->event.pressed) {
                 SEND_STRING("\\bmP");
-            }
-            break;
-        case LATEX_R:
-            if (record->event.pressed) {
-                SEND_STRING("\\bmr");
             }
             break;
         case LATEX_T:
@@ -433,6 +428,20 @@ void latex_e_func (tap_dance_state_t *state, void *user_data) {
     }
 }
 
+void latex_r_func (tap_dance_state_t *state, void *user_data) {
+    td_state = cur_dance(state);
+    switch (td_state) {
+        case SINGLE_TAP:
+            SEND_STRING("\\bmr");
+            break;
+        case DOUBLE_TAP:
+            SEND_STRING("\\bbr");
+            break;
+        default:
+            break;
+    }
+}
+
 void latex_s_func (tap_dance_state_t *state, void *user_data) {
     td_state = cur_dance(state);
     switch (td_state) {
@@ -469,5 +478,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_BRACK_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketopen_finished, td_ctrlbracketopen_reset),
     [TD_BRACK_C] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketclosed_finished, td_ctrlbracketclosed_reset),
     [LATEX_E] = ACTION_TAP_DANCE_FN(latex_e_func),
+    [LATEX_R] = ACTION_TAP_DANCE_FN(latex_r_func),
     [LATEX_S] = ACTION_TAP_DANCE_FN(latex_s_func),
 };

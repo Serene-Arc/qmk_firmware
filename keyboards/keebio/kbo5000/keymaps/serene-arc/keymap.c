@@ -17,6 +17,7 @@ typedef enum {
 enum {
     DISC_DN,
     DISC_UP,
+    LATEX_B,
     LATEX_E,
     LATEX_R,
     LATEX_S,
@@ -32,7 +33,6 @@ enum custom_keycodes {
     EMPH,
     ENQUOTE,
     ESC_UND,
-    LATEX_B,
     LATEX_CHAP,
     LATEX_DOT,
     LATEX_C,
@@ -89,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,            _______, _______, _______, _______, ESC_UND, ALIGN_EQ, _______, _______, _______, _______,
     RGB_MOD, _______, _______, _______, TD(LATEX_E), TD(LATEX_R), LATEX_T,                   _______, LATEX_U, MATH_I, LATEX_O, LATEX_P, _______, _______, _______, _______, _______,
     _______, KC_CAPS, _______, TD(LATEX_S), _______, LATEX_F, _______,                   _______, MATH_J, LATEX_K, _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, LATEX_X, LATEX_C, LATEX_V, LATEX_B,           LATEX_N, MINT_IN, _______, LATEX_DOT, _______,          _______,          TD(DISC_UP),
+    _______, _______, _______, _______, LATEX_X, LATEX_C, LATEX_V, TD(LATEX_B),           LATEX_N, MINT_IN, _______, LATEX_DOT, _______,          _______,          TD(DISC_UP),
     _______, _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______,                   _______, KC_MPRV, TD(DISC_DN), KC_MNXT
   ),
 
@@ -154,11 +154,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ESC_UND:
             if (record->event.pressed) {
                 SEND_STRING("\\_");
-            }
-            break;
-        case LATEX_B:
-            if (record->event.pressed) {
-                SEND_STRING("\\bm{");
             }
             break;
         case LATEX_CHAP:
@@ -472,6 +467,20 @@ void latex_r_func (tap_dance_state_t *state, void *user_data) {
     }
 }
 
+void latex_b_func (tap_dance_state_t *state, void *user_data) {
+    td_state = cur_dance(state);
+    switch (td_state) {
+        case SINGLE_TAP:
+            SEND_STRING("\\bnabla");
+            break;
+        case DOUBLE_TAP:
+            SEND_STRING("\\bm{");
+            break;
+        default:
+            break;
+    }
+}
+
 void latex_s_func (tap_dance_state_t *state, void *user_data) {
     td_state = cur_dance(state);
     switch (td_state) {
@@ -510,4 +519,5 @@ tap_dance_action_t tap_dance_actions[] = {
     [LATEX_E] = ACTION_TAP_DANCE_FN(latex_e_func),
     [LATEX_R] = ACTION_TAP_DANCE_FN(latex_r_func),
     [LATEX_S] = ACTION_TAP_DANCE_FN(latex_s_func),
+    [LATEX_B] = ACTION_TAP_DANCE_FN(latex_b_func),
 };

@@ -471,10 +471,10 @@ void latex_b_func (tap_dance_state_t *state, void *user_data) {
     td_state = cur_dance(state);
     switch (td_state) {
         case SINGLE_TAP:
-            SEND_STRING("\\bnabla");
+            SEND_STRING("\\bm{");
             break;
         case DOUBLE_TAP:
-            SEND_STRING("\\bm{");
+            SEND_STRING("\\bnabla");
             break;
         default:
             break;

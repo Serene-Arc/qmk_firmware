@@ -169,7 +169,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
         case LATEX_C:
             if (record->event.pressed) {
-                SEND_STRING("\\calC");
+                SEND_STRING("\\chapter{");
             }
             break;
         case LATEX_F:

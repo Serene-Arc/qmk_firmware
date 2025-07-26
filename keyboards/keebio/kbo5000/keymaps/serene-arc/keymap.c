@@ -88,7 +88,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
   [1] = LAYOUT_all(
-    QK_BOOT,              MATH_1, MATH_2, MATH_3, RGB_SAD, RGB_VAI, RGB_VAD,            _______, _______,          _______, _______, _______, _______, _______, _______, _______,
+    QK_BOOT,              MATH_1, MATH_2, MATH_3, RGB_SAD, RGB_VAI, RGB_VAD,            _______, _______,          _______, _______, _______, _______, _______, KC_MPRV, _______,
     RGB_TOG, _______, VIM_N1, VIM_N2, VIM_N3, VIM_N4, VIM_N5, VIM_N6,            _______, _______, _______, _______, ESC_UND, ALIGN_EQ, _______, _______, _______, _______,
     RGB_MOD, _______, TD(LATEX_Q), _______, TD(LATEX_E), TD(LATEX_R), LATEX_T,                   LATEX_Y, LATEX_U, MATH_I, LATEX_O, LATEX_P, _______, _______, _______, _______, _______,
     _______, KC_CAPS, _______, TD(LATEX_S), _______, LATEX_F, _______,                   _______, MATH_J, LATEX_K, _______, LATEX_COLON, _______, _______, _______, _______, _______,

@@ -251,8 +251,18 @@ void send_nibble(uint8_t number) {
 }
 
 void tap_random_base64(void) {
-#if defined(__AVR_ATmega32U4__)
+#if defined(__AVR__)
+#    if defined(TCNT0) && defined(TCNT1) && defined(TCNT3) && defined(TCNT4)
     uint8_t key = (TCNT0 + TCNT1 + TCNT3 + TCNT4) % 64;
+#    elif defined(TCNT0) && defined(TCNT1)
+    uint8_t key = (TCNT0 + TCNT1) % 64;
+#    elif defined(TCNT0)
+    uint8_t key = TCNT0 % 64;
+#    elif defined(TCNT1)
+    uint8_t key = TCNT1 % 64;
+#    else
+    uint8_t key = rand() % 64;
+#    endif
 #else
     uint8_t key = rand() % 64;
 #endif

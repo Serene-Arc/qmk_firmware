@@ -4,6 +4,13 @@ bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
 uint16_t alt_tab_limit = 600;
 
+// TAB_SWTH auto-repeat variables
+bool tab_swth_active = false;
+uint16_t tab_swth_timer = 0;
+uint16_t tab_swth_repeat_delay = 150;  // Initial delay before repeat starts (ms)
+uint16_t tab_swth_repeat_rate = 100;   // Time between repeats (ms)
+bool tab_swth_initial_sent = false;
+
 // define a type containing as many tapdance states as you need
 typedef enum {
   SINGLE_TAP,
@@ -22,6 +29,7 @@ enum {
     LATEX_Q,
     LATEX_R,
     LATEX_S,
+    TAB_SWTH,
     TD_BRACK_C,
     TD_BRACK_O,
     TD_SPC_SENT,
@@ -55,7 +63,6 @@ enum custom_keycodes {
     MATH_I,
     MATH_J,
     MINT_IN,
-    TAB_SWTH,
     VIM_N1,
     VIM_N2,
     VIM_N3,
@@ -84,7 +91,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     WIN_SWCH,KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,             KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL, KC_INS,  KC_PGUP,
     A_ESC,   KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_PAUS,  KC_PGDN,
     C(A(KC_T)),   KC_NO, KC_A,    KC_S, KC_D,    KC_F,    KC_G,                  KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,  KC_HOME, KC_END,
-    TAB_SWTH,  SC_LSPO, KC_GRV,  KC_Z,  KC_X,    KC_C,    KC_V,    KC_B,             KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,          SC_RSPC,          KC_UP,
+    TD(TAB_SWTH),  SC_LSPO, KC_GRV,  KC_Z,  KC_X,    KC_C,    KC_V,    KC_B,             KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,          SC_RSPC,          KC_UP,
     KC_MS_BTN3,  KC_LCTL, TD(TD_BRACK_O), KC_LGUI, MO(1),    SFT_T(KC_ENT),  KC_SPC,     MO(1),   TD(TD_SPC_SENT),  TD(TD_BRACK_C), KC_LGUI, KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
   ),
 
@@ -265,18 +272,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 SEND_STRING("\\mintinline{");
             }
             break;
-        case TAB_SWTH:
-            if (record->event.pressed) {
-                if (get_mods() & MOD_MASK_SHIFT){
-                    int current = get_mods();
-                    del_mods(MOD_MASK_SHIFT);
-                    tap_code16(C(KC_PGUP));
-                    set_mods(current);
-                } else {
-                    tap_code16(C(KC_PGDN));
-                }
-            }
-            break;
         case VIM_N1:
             if (record->event.pressed) {
                 SEND_STRING("$!nm1");
@@ -333,6 +328,34 @@ void matrix_scan_user(void) {
         if (timer_elapsed(alt_tab_timer) > alt_tab_limit) {
             unregister_code(KC_LALT);
             is_alt_tab_active = false;
+        }
+    }
+    
+    // Handle TAB_SWTH auto-repeat
+    if (tab_swth_active) {
+        if (!tab_swth_initial_sent && timer_elapsed(tab_swth_timer) > tab_swth_repeat_delay) {
+            // Send the first repeat after initial delay
+            if (get_mods() & MOD_MASK_SHIFT) {
+                int current = get_mods();
+                del_mods(MOD_MASK_SHIFT);
+                tap_code16(C(KC_PGUP));
+                set_mods(current);
+            } else {
+                tap_code16(C(KC_PGDN));
+            }
+            tab_swth_timer = timer_read();
+            tab_swth_initial_sent = true;
+        } else if (tab_swth_initial_sent && timer_elapsed(tab_swth_timer) > tab_swth_repeat_rate) {
+            // Continue repeating at the repeat rate
+            if (get_mods() & MOD_MASK_SHIFT) {
+                int current = get_mods();
+                del_mods(MOD_MASK_SHIFT);
+                tap_code16(C(KC_PGUP));
+                set_mods(current);
+            } else {
+                tap_code16(C(KC_PGDN));
+            }
+            tab_swth_timer = timer_read();
         }
     }
 }
@@ -543,12 +566,60 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
+void td_tab_swth_finished (tap_dance_state_t *state, void *user_data){
+    td_state = cur_dance(state);
+    switch (td_state) {
+        case SINGLE_TAP:
+            // Single tap: just send the key once
+            if (get_mods() & MOD_MASK_SHIFT){
+                int current = get_mods();
+                del_mods(MOD_MASK_SHIFT);
+                tap_code16(C(KC_PGUP));
+                set_mods(current);
+            } else {
+                tap_code16(C(KC_PGDN));
+            }
+            break;
+        case SINGLE_HOLD:
+            // Hold: start auto-repeat
+            tab_swth_active = true;
+            tab_swth_timer = timer_read();
+            tab_swth_initial_sent = false;
+            
+            // Send the first key press immediately
+            if (get_mods() & MOD_MASK_SHIFT){
+                int current = get_mods();
+                del_mods(MOD_MASK_SHIFT);
+                tap_code16(C(KC_PGUP));
+                set_mods(current);
+            } else {
+                tap_code16(C(KC_PGDN));
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void td_tab_swth_reset (tap_dance_state_t *state, void *user_data){
+    switch (td_state) {
+        case SINGLE_HOLD:
+            // Stop auto-repeat when key is released
+            tab_swth_active = false;
+            tab_swth_initial_sent = false;
+            break;
+        default:
+            break;
+    }
+}
+
 tap_dance_action_t tap_dance_actions[] = {
     [DISC_DN] = ACTION_TAP_DANCE_FN(discdown_fun),
     [DISC_UP] = ACTION_TAP_DANCE_FN(discup_fun),
     [TD_SPC_SENT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_spacesent_finished, td_spacesent_reset),
     [TD_BRACK_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketopen_finished, td_ctrlbracketopen_reset),
     [TD_BRACK_C] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_ctrlbracketclosed_finished, td_ctrlbracketclosed_reset),
+    [TAB_SWTH] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_tab_swth_finished, td_tab_swth_reset),
     [LATEX_E] = ACTION_TAP_DANCE_FN(latex_e_func),
     [LATEX_R] = ACTION_TAP_DANCE_FN(latex_r_func),
     [LATEX_Q] = ACTION_TAP_DANCE_FN(latex_q_func),
